@@ -76,7 +76,7 @@ class ClientProxy : CommonProxy() {
         @JvmStatic
         @SubscribeEvent
         fun registerModels(event: ModelRegistryEvent) {
-            //TODO: Register Models
+            Blocks.controller.initModel()
         }
     }
 }

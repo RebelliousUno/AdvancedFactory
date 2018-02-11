@@ -1,0 +1,15 @@
+[{
+  "modid": "advancedfactory",
+  "name": "Advanced Factory",
+  "description": "Advanced Factory 1.12",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/RebelliousUno/AdvancedFactory",
+  "updateUrl": "",
+  "authorList": ["RebelliousUno"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": [],
+  "useDependencyInformation": true
+}]
