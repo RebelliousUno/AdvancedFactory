@@ -10,8 +10,10 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraftforge.fml.common.registry.GameRegistry
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
+import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.config.GeneralConfig
 import java.io.File
 
@@ -24,6 +26,9 @@ open class CommonProxy {
         @SubscribeEvent
         fun registerBlocks(event: RegistryEvent.Register<Block>) {
             //TODO: registerBlocks
+            AdvancedFactory.logger?.log(Level.INFO, "Registering Blocks")
+            event.registry.register(Blocks.controller)
+            //TODO: GameRegistry.registerTileEntity()
         }
 
         @JvmStatic
