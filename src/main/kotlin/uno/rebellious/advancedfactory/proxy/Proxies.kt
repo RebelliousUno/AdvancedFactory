@@ -2,6 +2,7 @@ package uno.rebellious.advancedfactory.proxy
 
 import net.minecraft.block.Block
 import net.minecraft.item.Item
+import net.minecraft.item.ItemBlock
 import net.minecraftforge.client.event.ModelRegistryEvent
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.event.RegistryEvent
@@ -35,6 +36,9 @@ open class CommonProxy {
         @SubscribeEvent
         fun registerItems(event: RegistryEvent.Register<Item>) {
             //TODO: registerItems
+            AdvancedFactory.logger?.log(Level.INFO, "Registering Items")
+            val controller = ItemBlock(Blocks.controller).setRegistryName(Blocks.controller.registryName)
+            event.registry.register(controller)
         }
     }
 
