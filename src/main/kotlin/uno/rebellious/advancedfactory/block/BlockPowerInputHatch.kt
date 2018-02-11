@@ -1,0 +1,3 @@
+package uno.rebellious.advancedfactory.block
+
+class BlockPowerInputHatch
