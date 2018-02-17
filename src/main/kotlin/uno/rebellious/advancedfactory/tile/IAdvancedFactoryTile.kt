@@ -1,5 +1,5 @@
 package uno.rebellious.advancedfactory.tile
 
 interface IAdvancedFactoryTile {
-    var controllerTile: TileEntityAdvancedFactoryController
+    var controllerTile: TileEntityAdvancedFactoryController?
 }
