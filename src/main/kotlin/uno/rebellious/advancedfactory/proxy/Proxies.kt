@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.config.GeneralConfig
+import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
 import java.io.File
 
 @Mod.EventBusSubscriber
@@ -29,7 +30,7 @@ open class CommonProxy {
             //TODO: registerBlocks
             AdvancedFactory.logger?.log(Level.INFO, "Registering Blocks")
             event.registry.register(Blocks.controller)
-            //TODO: GameRegistry.registerTileEntity()
+            GameRegistry.registerTileEntity(TileEntityAdvancedFactoryController::class.java, AdvancedFactory.MOD_ID + ":controller")
         }
 
         @JvmStatic
