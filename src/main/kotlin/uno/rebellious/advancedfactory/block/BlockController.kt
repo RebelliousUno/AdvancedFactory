@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
 import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.Explosion
 import net.minecraft.world.World
 import net.minecraftforge.client.model.ModelLoader
 import uno.rebellious.advancedfactory.AdvancedFactory
@@ -20,7 +21,7 @@ import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
 
-class BlockController : Block(Material.CIRCUITS), ITileEntityProvider {
+class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
 
     init {
         unlocalizedName = "controller"
@@ -51,19 +52,7 @@ class BlockController : Block(Material.CIRCUITS), ITileEntityProvider {
         hitZ: Float
     ): Boolean {
         if (worldIn == null || worldIn.isRemote) return true
-        var tile = this.getFactoryAt(worldIn, pos)
-        tile?.listBlocks()
+        this.getFactoryAt(worldIn, pos)?.listBlocks()
         return true
     }
-
-    private fun getFactoryAt(worldIn: World, pos: BlockPos?): TileEntityAdvancedFactoryController? {
-        var tileEntity = worldIn.getTileEntity(pos)
-        return when {
-            tileEntity is TileEntityAdvancedFactoryController -> tileEntity
-            tileEntity is IAdvancedFactoryTile -> tileEntity.controllerTile
-            else -> null
-        }
-    }
-
-
 }

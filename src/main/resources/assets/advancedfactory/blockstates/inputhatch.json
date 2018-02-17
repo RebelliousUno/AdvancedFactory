@@ -1,0 +1,10 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "advancedfactory:inputhatch"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
+  }
+}

@@ -54,7 +54,6 @@ class TileEntityAdvancedFactoryController : TileEntity(), ITickable, IAdvancedFa
     fun listBlocks() {
         AdvancedFactory.logger?.log(Level.INFO, factoryContents)
     }
-
 }
 
 

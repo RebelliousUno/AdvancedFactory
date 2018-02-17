@@ -17,6 +17,7 @@ import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.config.GeneralConfig
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
+import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryInputHatch
 import java.io.File
 
 @Mod.EventBusSubscriber
@@ -30,7 +31,9 @@ open class CommonProxy {
             //TODO: registerBlocks
             AdvancedFactory.logger?.log(Level.INFO, "Registering Blocks")
             event.registry.register(Blocks.controller)
+            event.registry.register(Blocks.inputHatch)
             GameRegistry.registerTileEntity(TileEntityAdvancedFactoryController::class.java, AdvancedFactory.MOD_ID + ":controller")
+            GameRegistry.registerTileEntity(TileEntityAdvancedFactoryInputHatch::class.java, AdvancedFactory.MOD_ID + ":inputhatch")
         }
 
         @JvmStatic
@@ -39,7 +42,9 @@ open class CommonProxy {
             //TODO: registerItems
             AdvancedFactory.logger?.log(Level.INFO, "Registering Items")
             val controller = ItemBlock(Blocks.controller).setRegistryName(Blocks.controller.registryName)
+            val inputHatch = ItemBlock(Blocks.inputHatch).setRegistryName(Blocks.inputHatch.registryName)
             event.registry.register(controller)
+            event.registry.register(inputHatch)
         }
     }
 
@@ -78,6 +83,7 @@ class ClientProxy : CommonProxy() {
         @SubscribeEvent
         fun registerModels(event: ModelRegistryEvent) {
             Blocks.controller.initModel()
+            Blocks.inputHatch.initModel()
         }
     }
 }
