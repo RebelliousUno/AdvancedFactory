@@ -15,9 +15,12 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
+import uno.rebellious.advancedfactory.block.Blocks.controller
+import uno.rebellious.advancedfactory.block.Blocks.inputHatch
 import uno.rebellious.advancedfactory.config.GeneralConfig
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryInputHatch
+import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryOutputHatch
 import java.io.File
 
 @Mod.EventBusSubscriber
@@ -30,10 +33,12 @@ open class CommonProxy {
         fun registerBlocks(event: RegistryEvent.Register<Block>) {
             //TODO: registerBlocks
             AdvancedFactory.logger?.log(Level.INFO, "Registering Blocks")
-            event.registry.register(Blocks.controller)
-            event.registry.register(Blocks.inputHatch)
+            Blocks.getBlockList().forEach {
+                event.registry.register(it)
+            }
             GameRegistry.registerTileEntity(TileEntityAdvancedFactoryController::class.java, AdvancedFactory.MOD_ID + ":controller")
             GameRegistry.registerTileEntity(TileEntityAdvancedFactoryInputHatch::class.java, AdvancedFactory.MOD_ID + ":inputhatch")
+            GameRegistry.registerTileEntity(TileEntityAdvancedFactoryOutputHatch::class.java, AdvancedFactory.MOD_ID + ":outputhatch")
         }
 
         @JvmStatic
@@ -41,10 +46,9 @@ open class CommonProxy {
         fun registerItems(event: RegistryEvent.Register<Item>) {
             //TODO: registerItems
             AdvancedFactory.logger?.log(Level.INFO, "Registering Items")
-            val controller = ItemBlock(Blocks.controller).setRegistryName(Blocks.controller.registryName)
-            val inputHatch = ItemBlock(Blocks.inputHatch).setRegistryName(Blocks.inputHatch.registryName)
-            event.registry.register(controller)
-            event.registry.register(inputHatch)
+            Blocks.getItemList().forEach {
+                event.registry.register(it)
+            }
         }
     }
 
@@ -82,8 +86,7 @@ class ClientProxy : CommonProxy() {
         @JvmStatic
         @SubscribeEvent
         fun registerModels(event: ModelRegistryEvent) {
-            Blocks.controller.initModel()
-            Blocks.inputHatch.initModel()
+            Blocks.initModels()
         }
     }
 }
