@@ -1,15 +1,21 @@
 package uno.rebellious.advancedfactory.tile
 
 
+import net.minecraft.item.ItemStack
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ITickable
+import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
+import net.minecraftforge.common.capabilities.Capability
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.BlockAdvancedFactory
 
 class TileEntityAdvancedFactoryController : TileEntity(), ITickable, IAdvancedFactoryTile {
     override val factoryBlockType: String = "controller"
+
+    val inventorySize = 1
+    val inventory: NonNullList<ItemStack> = NonNullList.withSize(inventorySize, ItemStack.EMPTY)
 
     override fun update() {
         this.factoryContents.put(this.pos, factoryBlockType)
