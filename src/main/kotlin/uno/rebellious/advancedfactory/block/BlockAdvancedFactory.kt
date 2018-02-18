@@ -7,7 +7,9 @@ import net.minecraft.world.World
 import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
 
-open class BlockAdvancedFactory: Block(Material.CIRCUITS) {
+abstract class BlockAdvancedFactory: Block(Material.CIRCUITS) {
+
+
     protected fun getFactoryAt(worldIn: World, pos: BlockPos?): TileEntityAdvancedFactoryController? {
         if (pos == null) return null
         val tileEntity = worldIn.getTileEntity(pos)

@@ -19,6 +19,7 @@ import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryInputHatch
 
 class BlockInputHatch : BlockAdvancedFactory(), ITileEntityProvider {
+
     override fun createNewTileEntity(worldIn: World?, meta: Int): TileEntity? {
         return TileEntityAdvancedFactoryInputHatch()
     }

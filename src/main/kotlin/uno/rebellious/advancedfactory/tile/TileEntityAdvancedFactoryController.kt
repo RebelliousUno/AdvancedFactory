@@ -6,14 +6,17 @@ import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
+import uno.rebellious.advancedfactory.block.BlockAdvancedFactory
 
 class TileEntityAdvancedFactoryController : TileEntity(), ITickable, IAdvancedFactoryTile {
+    override val factoryBlockType: String = "controller"
+
     override fun update() {
-        this.factoryContents.add(this.pos)
+        this.factoryContents.put(this.pos, factoryBlockType)
         this.checkNeighbours()
     }
 
-    private val factoryContents = HashSet<BlockPos>() //TODO: Block or tile?
+    private val factoryContents = HashMap<BlockPos, String>() //TODO: Block or tile?
 
     private fun checkNeighbours() {
         val pos = this.pos
@@ -29,11 +32,11 @@ class TileEntityAdvancedFactoryController : TileEntity(), ITickable, IAdvancedFa
                     when {
                         mysteryTile.controllerTile == null -> {
                             mysteryTile.controllerTile = this
-                            factoryContents.add(block)
+                            factoryContents.put(block, mysteryTile.factoryBlockType)
                         }
                         mysteryTile.controllerTile == this -> {
                             // If it is us then make sure it's in our list
-                            factoryContents.add(block)
+                            factoryContents.put(block, mysteryTile.factoryBlockType)
                         }
                         else -> {
                             // Otherwise it's got a controller that's not us

@@ -8,6 +8,7 @@ import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.BlockController
 
 class TileEntityAdvancedFactoryInputHatch : TileEntity(), ITickable, IAdvancedFactoryTile {
+    override val factoryBlockType: String = "inputHatch"
     private var _controller: TileEntityAdvancedFactoryController? = null
     private var controllerTilePos: BlockPos? = null
     override var controllerTile: TileEntityAdvancedFactoryController?
