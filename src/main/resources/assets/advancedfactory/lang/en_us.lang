@@ -1,3 +1,4 @@
-tile.controller.name=Advanced Generator Controller
-tile.inputhatch.name=Advanced Generator Input Hatch
-tile.outputhatch.name=Advanced Generator Output Hatch
+tile.controller.name=Advanced Factory Controller
+tile.inputhatch.name=Advanced Factory Input Hatch
+tile.outputhatch.name=Advanced Factory Output Hatch
+tile.smelter.name=Advanced Factory Smelter

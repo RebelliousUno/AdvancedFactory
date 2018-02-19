@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "advancedfactory:smelter"
+  },
+  "pattern": [
+    "pcp",
+    "crc",
+    "pcp"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:comparator"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "p": {
+      "item": "minecraft:repeater"
+    }
+  }
+}
