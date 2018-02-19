@@ -2,7 +2,6 @@ package uno.rebellious.advancedfactory.proxy
 
 import net.minecraft.block.Block
 import net.minecraft.item.Item
-import net.minecraft.item.ItemBlock
 import net.minecraftforge.client.event.ModelRegistryEvent
 import net.minecraftforge.common.config.Configuration
 import net.minecraftforge.event.RegistryEvent
@@ -15,8 +14,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
-import uno.rebellious.advancedfactory.block.Blocks.controller
-import uno.rebellious.advancedfactory.block.Blocks.inputHatch
 import uno.rebellious.advancedfactory.config.GeneralConfig
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryInputHatch

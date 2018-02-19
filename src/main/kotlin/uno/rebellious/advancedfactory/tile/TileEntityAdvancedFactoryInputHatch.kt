@@ -7,10 +7,9 @@ import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilityProvider
 import net.minecraftforge.items.CapabilityItemHandler
-import org.apache.logging.log4j.Level
-import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.BlockController
 import uno.rebellious.advancedfactory.handler.InventoryHandler
+import uno.rebellious.advancedfactory.handler.ItemDirection
 
 class TileEntityAdvancedFactoryInputHatch : TileEntity(), ICapabilityProvider, ITickable, IAdvancedFactoryTile {
     override val factoryBlockType: String = "inputHatch"
@@ -41,7 +40,7 @@ class TileEntityAdvancedFactoryInputHatch : TileEntity(), ICapabilityProvider, I
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         val contTile = this.controllerTile ?: return super.getCapability(capability, facing)
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return InventoryHandler(contTile) as T
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return InventoryHandler(contTile, ItemDirection.INPUT) as T
         return super.getCapability(capability, facing)
     }
 

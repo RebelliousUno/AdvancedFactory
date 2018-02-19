@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
 
-class InventoryHandler(val controller: TileEntityAdvancedFactoryController): IItemHandler {
+class InventoryHandler(val controller: TileEntityAdvancedFactoryController, private val direction: ItemDirection): IItemHandler {
 
     var inventory = controller.inventory
 
@@ -21,10 +21,30 @@ class InventoryHandler(val controller: TileEntityAdvancedFactoryController): IIt
     override fun getSlots(): Int = inventory.size
 
     override fun extractItem(slot: Int, amount: Int, simulate: Boolean): ItemStack {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (direction == ItemDirection.INPUT) return ItemStack.EMPTY
+        if (slot > slots) return ItemStack.EMPTY
+
+        //presumably slot is the slot to pull from
+        //amount is the amount to pull
+        //simulate is whether or not to adjust our stack
+
+        var ourStack = inventory[slot]
+        if (amount < ourStack.count) {
+            var newStack = ourStack.copy()
+            var returnStack = newStack.splitStack(amount)
+            if (!simulate) ourStack.shrink(amount)
+            return returnStack
+        }
+        if (amount >= ourStack.count) {
+            if (!simulate) inventory[slot] = ItemStack.EMPTY
+            return ourStack
+        }
+        return ItemStack.EMPTY
     }
 
     override fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean): ItemStack {
+        AdvancedFactory.logger?.log(Level.INFO, direction)
+        if (direction == ItemDirection.OUTPUT) return stack
         if (stack.isEmpty) return ItemStack.EMPTY
         val stackInSlot = inventory[slot]
 

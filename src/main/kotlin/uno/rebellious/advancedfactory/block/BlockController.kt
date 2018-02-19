@@ -1,8 +1,6 @@
 package uno.rebellious.advancedfactory.block
 
-import net.minecraft.block.Block
 import net.minecraft.block.ITileEntityProvider
-import net.minecraft.block.material.Material
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.creativetab.CreativeTabs
@@ -11,14 +9,11 @@ import net.minecraft.item.Item
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.EnumHand
-import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.Explosion
 import net.minecraft.world.World
 import net.minecraftforge.client.model.ModelLoader
-import uno.rebellious.advancedfactory.AdvancedFactory
 import org.apache.logging.log4j.Level
-import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
+import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
 
 class BlockController : BlockAdvancedFactory(), ITileEntityProvider {

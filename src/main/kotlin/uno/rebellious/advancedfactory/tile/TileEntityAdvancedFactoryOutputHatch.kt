@@ -1,11 +1,17 @@
 package uno.rebellious.advancedfactory.tile
 
 import net.minecraft.tileentity.TileEntity
+import net.minecraft.util.EnumFacing
 import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
+import net.minecraftforge.common.capabilities.Capability
+import net.minecraftforge.common.capabilities.ICapabilityProvider
+import net.minecraftforge.items.CapabilityItemHandler
 import uno.rebellious.advancedfactory.block.BlockController
+import uno.rebellious.advancedfactory.handler.InventoryHandler
+import uno.rebellious.advancedfactory.handler.ItemDirection
 
-class TileEntityAdvancedFactoryOutputHatch: TileEntity(), ITickable, IAdvancedFactoryTile {
+class TileEntityAdvancedFactoryOutputHatch: TileEntity(), ITickable, ICapabilityProvider, IAdvancedFactoryTile {
     override val factoryBlockType: String = "outputHatch"
 
     override fun update() {
@@ -25,4 +31,17 @@ class TileEntityAdvancedFactoryOutputHatch: TileEntity(), ITickable, IAdvancedFa
             this._controller = value
             this.controllerTilePos = value?.pos
         }
+
+    override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.controllerTile != null) {
+            return true
+        }
+        return super.hasCapability(capability, facing)
+    }
+
+    override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
+        val contTile = this.controllerTile ?: return super.getCapability(capability, facing)
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return InventoryHandler(contTile, ItemDirection.OUTPUT) as T
+        return super.getCapability(capability, facing)
+    }
 }
