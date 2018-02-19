@@ -12,11 +12,15 @@ import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
 import uno.rebellious.advancedfactory.tile.TileEntityController
 
-abstract class BlockAdvancedFactory: Block(Material.CIRCUITS) {
+abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
 
     fun initModel() {
         AdvancedFactory.logger?.log(Level.INFO, "Init Model Registry Name is " + registryName)
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, ModelResourceLocation(registryName, "inventory"))
+        ModelLoader.setCustomModelResourceLocation(
+            Item.getItemFromBlock(this),
+            0,
+            ModelResourceLocation(registryName, "inventory")
+        )
     }
 
     protected fun getFactoryAt(worldIn: World, pos: BlockPos?): TileEntityController? {

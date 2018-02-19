@@ -16,9 +16,11 @@ object Blocks {
         outputHatch.initModel()
         smelter.initModel()
     }
+
     fun getBlockList(): Array<Block> {
         return arrayOf(controller, inputHatch, outputHatch, smelter)
     }
+
     fun getItemList(): Array<Item> {
         return arrayOf(
             ItemBlock(controller).setRegistryName(Blocks.controller.registryName),

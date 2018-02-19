@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.config.GeneralConfig
-import uno.rebellious.advancedfactory.tile.*
+import uno.rebellious.advancedfactory.tile.Tiles
 import java.io.File
 
 @Mod.EventBusSubscriber
@@ -47,28 +47,28 @@ open class CommonProxy {
         }
     }
 
-        fun preInit(event: FMLPreInitializationEvent) {
-            val configDir = event.modConfigurationDirectory
-            config = Configuration(File(configDir.path, "advancedFactory.cfg"))
-            try {
-                config!!.load()
-                GeneralConfig.readConfig(config!!)
-            } catch (exception: Exception) {
-                AdvancedFactory.logger?.log(Level.ERROR, "Error loading config file", exception)
-            } finally {
-                if (config!!.hasChanged()) {
-                    config!!.save()
-                }
+    fun preInit(event: FMLPreInitializationEvent) {
+        val configDir = event.modConfigurationDirectory
+        config = Configuration(File(configDir.path, "advancedFactory.cfg"))
+        try {
+            config!!.load()
+            GeneralConfig.readConfig(config!!)
+        } catch (exception: Exception) {
+            AdvancedFactory.logger?.log(Level.ERROR, "Error loading config file", exception)
+        } finally {
+            if (config!!.hasChanged()) {
+                config!!.save()
             }
         }
+    }
 
-        fun init(event: FMLInitializationEvent) {
-            //TODO: Init
-        }
+    fun init(event: FMLInitializationEvent) {
+        //TODO: Init
+    }
 
-        fun postInit(event: FMLPostInitializationEvent) {
-            if (config?.hasChanged()!!) config?.save()
-        }
+    fun postInit(event: FMLPostInitializationEvent) {
+        if (config?.hasChanged()!!) config?.save()
+    }
 }
 
 @Mod.EventBusSubscriber

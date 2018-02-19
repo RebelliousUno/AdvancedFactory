@@ -41,7 +41,10 @@ class TileEntityOutputHatch : TileEntity(), ITickable, ICapabilityProvider, IAdv
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         val contTile = this.controllerTile ?: return super.getCapability(capability, facing)
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return InventoryHandler(contTile, ItemDirection.OUTPUT) as T
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return InventoryHandler(
+            contTile,
+            ItemDirection.OUTPUT
+        ) as T
         return super.getCapability(capability, facing)
     }
 }
