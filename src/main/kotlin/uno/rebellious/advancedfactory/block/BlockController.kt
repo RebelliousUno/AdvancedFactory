@@ -27,11 +27,6 @@ class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
         return TileEntityController()
     }
 
-//    fun initModel() {
-//        AdvancedFactory.logger?.log(Level.INFO, "Init Model Registry Name is " + registryName)
-//        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, ModelResourceLocation(registryName, "inventory"))
-//    }
-
     override fun onBlockActivated(
         worldIn: World?,
         pos: BlockPos?,
