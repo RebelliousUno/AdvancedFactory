@@ -15,9 +15,7 @@ import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.config.GeneralConfig
-import uno.rebellious.advancedfactory.tile.TileEntityController
-import uno.rebellious.advancedfactory.tile.TileEntityInputHatch
-import uno.rebellious.advancedfactory.tile.TileEntityOutputHatch
+import uno.rebellious.advancedfactory.tile.*
 import java.io.File
 
 @Mod.EventBusSubscriber
@@ -33,9 +31,9 @@ open class CommonProxy {
             Blocks.getBlockList().forEach {
                 event.registry.register(it)
             }
-            GameRegistry.registerTileEntity(TileEntityController::class.java, AdvancedFactory.MOD_ID + ":controller")
-            GameRegistry.registerTileEntity(TileEntityInputHatch::class.java, AdvancedFactory.MOD_ID + ":inputhatch")
-            GameRegistry.registerTileEntity(TileEntityOutputHatch::class.java, AdvancedFactory.MOD_ID + ":outputhatch")
+            Tiles.getTiles().forEach {
+                GameRegistry.registerTileEntity(it.first, it.second)
+            }
         }
 
         @JvmStatic
