@@ -5,9 +5,9 @@ import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.ItemHandlerHelper
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
-import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
+import uno.rebellious.advancedfactory.tile.TileEntityController
 
-class InventoryHandler(val controller: TileEntityAdvancedFactoryController, private val direction: ItemDirection): IItemHandler {
+class InventoryHandler(val controller: TileEntityController, private val direction: ItemDirection): IItemHandler {
 
     var inventory = controller.inventory
 

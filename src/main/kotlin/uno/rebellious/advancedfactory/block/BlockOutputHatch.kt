@@ -14,11 +14,11 @@ import net.minecraft.world.World
 import net.minecraftforge.client.model.ModelLoader
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
-import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryOutputHatch
+import uno.rebellious.advancedfactory.tile.TileEntityOutputHatch
 
 class BlockOutputHatch: BlockAdvancedFactory(), ITileEntityProvider {
     override fun createNewTileEntity(worldIn: World?, meta: Int): TileEntity? {
-        return TileEntityAdvancedFactoryOutputHatch()
+        return TileEntityOutputHatch()
     }
 
     init {

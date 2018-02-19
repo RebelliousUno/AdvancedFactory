@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 
-class TileEntityAdvancedFactoryController : TileEntity(), ITickable, IAdvancedFactoryTile {
+class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
     override val factoryBlockType: String = "controller"
 
     val inventorySize = 1
@@ -28,7 +28,7 @@ class TileEntityAdvancedFactoryController : TileEntity(), ITickable, IAdvancedFa
         neighbours.forEach { block ->
             val mysteryTile = this.world.getTileEntity(block)
             when (mysteryTile) {
-                is TileEntityAdvancedFactoryController -> //Adjacent block is another controller...
+                is TileEntityController -> //Adjacent block is another controller...
                     // make sure it's not in our list
                     factoryContents.remove(block)
                 is IAdvancedFactoryTile -> // Adjacent block is an AdvancedFactory
@@ -54,7 +54,7 @@ class TileEntityAdvancedFactoryController : TileEntity(), ITickable, IAdvancedFa
         }
     }
 
-    override var controllerTile: TileEntityAdvancedFactoryController?
+    override var controllerTile: TileEntityController?
         get() = this
         set(value) {}
 

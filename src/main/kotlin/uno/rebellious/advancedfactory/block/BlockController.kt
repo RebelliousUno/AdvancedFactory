@@ -14,7 +14,7 @@ import net.minecraft.world.World
 import net.minecraftforge.client.model.ModelLoader
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
-import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactoryController
+import uno.rebellious.advancedfactory.tile.TileEntityController
 
 class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
 
@@ -27,7 +27,7 @@ class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
 
     override fun createNewTileEntity(worldIn: World?, meta: Int): TileEntity? {
         AdvancedFactory.logger?.log(Level.INFO, "Creating new tile entity")
-        return TileEntityAdvancedFactoryController()
+        return TileEntityController()
     }
 
     fun initModel() {

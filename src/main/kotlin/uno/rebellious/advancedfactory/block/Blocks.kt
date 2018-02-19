@@ -8,26 +8,26 @@ object Blocks {
     val controller = BlockController()
     val inputHatch = BlockInputHatch()
     val outputHatch = BlockOutputHatch()
+    val smelter = BlockSmelter()
 
     fun initModels() {
         controller.initModel()
         inputHatch.initModel()
         outputHatch.initModel()
+        smelter.initModel()
     }
     fun getBlockList(): Array<Block> {
-        return arrayOf(controller, inputHatch, outputHatch)
+        return arrayOf(controller, inputHatch, outputHatch, smelter)
     }
     fun getItemList(): Array<Item> {
         return arrayOf(
             ItemBlock(controller).setRegistryName(Blocks.controller.registryName),
             ItemBlock(inputHatch).setRegistryName(Blocks.inputHatch.registryName),
-            ItemBlock(outputHatch).setRegistryName(Blocks.outputHatch.registryName)
+            ItemBlock(outputHatch).setRegistryName(Blocks.outputHatch.registryName),
+            ItemBlock(smelter).setRegistryName(Blocks.smelter.registryName)
+
         )
 
     }
-//TODO Implement    val itemInputHatch = BlockInputHatch<Item>()
-//TODO Implement    val fluidInputHatch = BlockInputHatch<Fluid>()
-//TODO Implement    val outputHatch = BlockOutputHatch<Item>()
-//TODO Implement    val powerInputHatch = BlockPowerInputHatch()
 
 }

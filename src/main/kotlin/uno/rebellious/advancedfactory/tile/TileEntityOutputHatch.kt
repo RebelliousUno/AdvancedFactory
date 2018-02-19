@@ -11,16 +11,8 @@ import uno.rebellious.advancedfactory.block.BlockController
 import uno.rebellious.advancedfactory.handler.InventoryHandler
 import uno.rebellious.advancedfactory.handler.ItemDirection
 
-class TileEntityAdvancedFactoryInputHatch : TileEntity(), ICapabilityProvider, ITickable, IAdvancedFactoryTile {
-    override val factoryBlockType: String = "inputHatch"
-    private var _controller: TileEntityAdvancedFactoryController? = null
-    private var controllerTilePos: BlockPos? = null
-    override var controllerTile: TileEntityAdvancedFactoryController?
-        get() = this._controller
-        set(value) {
-            this._controller = value
-            this.controllerTilePos = value?.pos
-        }
+class TileEntityOutputHatch : TileEntity(), ITickable, ICapabilityProvider, IAdvancedFactoryTile {
+    override val factoryBlockType: String = "outputHatch"
 
     override fun update() {
         //Check if still has a valid controller
@@ -31,6 +23,15 @@ class TileEntityAdvancedFactoryInputHatch : TileEntity(), ICapabilityProvider, I
         }
     }
 
+    private var _controller: TileEntityController? = null
+    private var controllerTilePos: BlockPos? = null
+    override var controllerTile: TileEntityController?
+        get() = this._controller
+        set(value) {
+            this._controller = value
+            this.controllerTilePos = value?.pos
+        }
+
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.controllerTile != null) {
             return true
@@ -40,8 +41,7 @@ class TileEntityAdvancedFactoryInputHatch : TileEntity(), ICapabilityProvider, I
 
     override fun <T : Any?> getCapability(capability: Capability<T>, facing: EnumFacing?): T? {
         val contTile = this.controllerTile ?: return super.getCapability(capability, facing)
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return InventoryHandler(contTile, ItemDirection.INPUT) as T
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return InventoryHandler(contTile, ItemDirection.OUTPUT) as T
         return super.getCapability(capability, facing)
     }
-
 }
