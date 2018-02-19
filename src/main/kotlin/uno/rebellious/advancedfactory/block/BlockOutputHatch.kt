@@ -28,14 +28,14 @@ class BlockOutputHatch: BlockAdvancedFactory(), ITileEntityProvider {
         AdvancedFactory.logger?.log(Level.INFO, "Init Registry Name is " + registryName)
     }
 
-    fun initModel() {
-        AdvancedFactory.logger?.log(Level.INFO, "Init Model Registry Name is " + registryName)
-        ModelLoader.setCustomModelResourceLocation(
-            Item.getItemFromBlock(this),
-            0,
-            ModelResourceLocation(registryName, "inventory")
-        )
-    }
+//    fun initModel() {
+//        AdvancedFactory.logger?.log(Level.INFO, "Init Model Registry Name is " + registryName)
+//        ModelLoader.setCustomModelResourceLocation(
+//            Item.getItemFromBlock(this),
+//            0,
+//            ModelResourceLocation(registryName, "inventory")
+//        )
+//    }
 
     override fun onBlockActivated(
         worldIn: World?,
