@@ -31,7 +31,7 @@ class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
             if (currentCookingTime == 0) {
                 smeltItem()
             } else if (currentCookingTime > 0) {
-                currentCookingTime --
+                currentCookingTime--
             }
         } else if (canSmelt()) {
             moveItemToSmelt()

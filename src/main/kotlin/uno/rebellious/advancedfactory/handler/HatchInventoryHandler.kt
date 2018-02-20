@@ -5,12 +5,11 @@ import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.ItemHandlerHelper
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
-import uno.rebellious.advancedfactory.tile.TileEntityController
+import uno.rebellious.advancedfactory.tile.TileEntityHatch
 
-class InventoryHandler(val controller: TileEntityController, private val direction: ItemDirection) : IItemHandler {
+class HatchInventoryHandler(var tile: TileEntityHatch, private val direction: ItemDirection) : IItemHandler {
 
-    var inventory = controller.inventory
-
+    var inventory = tile.itemInventory
     //Get the stack in slot number slot
     override fun getStackInSlot(slot: Int): ItemStack {
         return if (slot > inventory.size) ItemStack.EMPTY else inventory[slot]
@@ -18,17 +17,17 @@ class InventoryHandler(val controller: TileEntityController, private val directi
 
     override fun getSlotLimit(slot: Int): Int = 64
 
-    override fun getSlots(): Int = inventory.size
+    override fun getSlots(): Int = 1 //Only returns a specific slot or allows access to a specific slot
 
     override fun extractItem(slot: Int, amount: Int, simulate: Boolean): ItemStack {
         if (direction == ItemDirection.INPUT) return ItemStack.EMPTY
         if (slot > slots) return ItemStack.EMPTY
-
+        val extractSlot = 1
         //presumably slot is the slot to pull from
         //amount is the amount to pull
         //simulate is whether or not to adjust our stack
 
-        var ourStack = inventory[slot]
+        var ourStack = inventory[extractSlot]
         if (amount < ourStack.count) {
             var newStack = ourStack.copy()
             var returnStack = newStack.splitStack(amount)
@@ -36,7 +35,7 @@ class InventoryHandler(val controller: TileEntityController, private val directi
             return returnStack
         }
         if (amount >= ourStack.count) {
-            if (!simulate) inventory[slot] = ItemStack.EMPTY
+            if (!simulate) inventory[extractSlot] = ItemStack.EMPTY
             return ourStack
         }
         return ItemStack.EMPTY
@@ -46,18 +45,19 @@ class InventoryHandler(val controller: TileEntityController, private val directi
         AdvancedFactory.logger?.log(Level.INFO, direction)
         if (direction == ItemDirection.OUTPUT) return stack
         if (stack.isEmpty) return ItemStack.EMPTY
-        val stackInSlot = inventory[slot]
+        val insertSlot = 0
+        val stackInSlot = inventory[insertSlot]
 
         if (!stackInSlot.isEmpty) {
             if (!ItemHandlerHelper.canItemStacksStack(stack, stackInSlot)) {
                 return stack
             }
 
-            val spaceInSlot = Math.min(stack.maxStackSize, getSlotLimit(slot)) - stackInSlot.count
+            val spaceInSlot = Math.min(stack.maxStackSize, getSlotLimit(insertSlot)) - stackInSlot.count
 
             if (spaceInSlot >= stack.count) {
                 if (!simulate) stackInSlot.grow(stack.count)
-                controller.markDirty()
+                tile.markDirty()
                 return ItemStack.EMPTY
             }
             if (spaceInSlot < stack.count) {
@@ -66,12 +66,12 @@ class InventoryHandler(val controller: TileEntityController, private val directi
                 if (!simulate) {
                     stackInSlot.grow(newStack.count)
                 }
-                controller.markDirty()
+                tile.markDirty()
                 return stackToAdd
             }
         }
-        if (!simulate) inventory[slot] = stack.copy()
-        controller.markDirty()
+        if (!simulate) inventory[insertSlot] = stack.copy()
+        tile.markDirty()
         return ItemStack.EMPTY
     }
 
