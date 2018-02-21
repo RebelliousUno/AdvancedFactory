@@ -10,8 +10,11 @@ import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 
 class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
-    override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(1, ItemStack.EMPTY)
+    override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(2, ItemStack.EMPTY)
     override val factoryBlockType: String = "controller"
+    override var inputStack: ItemStack = itemInventory[0]
+    override var outputStack: ItemStack = itemInventory[1]
+
 
     override fun update() {
         this.factoryContents.put(this.pos, factoryBlockType)
@@ -27,22 +30,22 @@ class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
     private fun executeProgram() {
         factoryProgram.forEach {
             //Check first has a stack
-            if (!it.first.itemInventory[1].isEmpty) {
+            if (!it.first.outputStack.isEmpty) {
                 //Check second is empty
-                if (it.second.itemInventory[0].isEmpty) {
-                    it.second.itemInventory[0] = it.first.itemInventory[1].copy()
-                    it.first.itemInventory[1] = ItemStack.EMPTY
-                } else if (it.second.itemInventory[0].item == it.first.itemInventory[1].item) {
+                if (it.second.inputStack.isEmpty) {
+                    it.second.inputStack = it.first.itemInventory[1].copy()
+                    it.first.outputStack = ItemStack.EMPTY
+                } else if (it.second.inputStack.item == it.first.outputStack.item) {
                     // same item check if space
-                    var inputSpace = it.second.itemInventory[0].maxStackSize - it.second.itemInventory[0].count
-                    var outputSize = it.first.itemInventory[1].count
+                    var inputSpace = it.second.inputStack.maxStackSize - it.second.inputStack.count
+                    var outputSize = it.first.outputStack.count
 
                     if (inputSpace >= outputSize) {
-                        it.second.itemInventory[0].grow(outputSize)
-                        it.first.itemInventory[1] = ItemStack.EMPTY
+                        it.second.inputStack.grow(outputSize)
+                        it.first.outputStack = ItemStack.EMPTY
                     } else {
-                        it.second.itemInventory[0].grow(inputSpace)
-                        it.first.itemInventory[1].shrink(inputSpace)
+                        it.second.inputStack.grow(inputSpace)
+                        it.first.outputStack.shrink(inputSpace)
                     }
                 }
             }

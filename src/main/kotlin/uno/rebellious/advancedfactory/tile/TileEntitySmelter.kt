@@ -8,11 +8,14 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 
 class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
-    override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(1, ItemStack.EMPTY)
+    override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(3, ItemStack.EMPTY)
 
-    private var smelterInput = NonNullList.withSize(1, ItemStack.EMPTY)
-    private var smelterOutput = NonNullList.withSize(1, ItemStack.EMPTY)
-    private var currentSmeltingItem = ItemStack.EMPTY
+    override var inputStack: ItemStack = itemInventory[0]
+
+    override var outputStack: ItemStack = itemInventory[1]
+
+    private var currentSmeltingItem = itemInventory[2]
+
     private var currentCookingTime = 0
 
     private var _controller: TileEntityController? = null
@@ -41,13 +44,13 @@ class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
     }
 
     private fun moveItemToSmelt() {
-        currentSmeltingItem = smelterInput[0].copy()
+        currentSmeltingItem = inputStack.copy()
         currentSmeltingItem.count = 1
-        smelterInput[0].shrink(1)
+        inputStack.shrink(1)
     }
 
     private fun canSmelt(): Boolean {
-        return !(smelterInput[0].isEmpty || FurnaceRecipes.instance().getSmeltingResult(smelterInput[0]).isEmpty)
+        return !(inputStack.isEmpty || FurnaceRecipes.instance().getSmeltingResult(inputStack).isEmpty)
     }
 
     private fun getCookTime(): Int = 200
@@ -56,12 +59,12 @@ class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
         if (currentSmeltingItem.isEmpty) return
         val result = FurnaceRecipes.instance().getSmeltingResult(currentSmeltingItem)
         when {
-            smelterOutput[0].isEmpty -> {
-                smelterOutput[0] = result.copy()
+            outputStack.isEmpty -> {
+                outputStack = result.copy()
                 currentSmeltingItem = ItemStack.EMPTY
             }
-            smelterOutput[0].item == result.item -> {
-                smelterOutput[0].grow(result.count)
+            outputStack.item == result.item -> {
+                outputStack.grow(result.count)
                 currentSmeltingItem = ItemStack.EMPTY
             }
         }

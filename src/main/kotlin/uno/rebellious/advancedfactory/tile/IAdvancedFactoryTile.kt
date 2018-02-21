@@ -7,4 +7,8 @@ interface IAdvancedFactoryTile {
     var controllerTile: TileEntityController?
     val factoryBlockType: String
     var itemInventory: NonNullList<ItemStack>
+
+    var inputStack: ItemStack
+    var outputStack: ItemStack
+
 }

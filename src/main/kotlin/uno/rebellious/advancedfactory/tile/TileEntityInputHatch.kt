@@ -1,5 +1,6 @@
 package uno.rebellious.advancedfactory.tile
 
+import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumFacing
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilityProvider
@@ -9,6 +10,8 @@ import uno.rebellious.advancedfactory.handler.ItemDirection
 
 class TileEntityInputHatch : TileEntityHatch(), ICapabilityProvider {
     override val factoryBlockType: String = "inputHatch"
+
+
 
     override fun update() {
         super.update()
