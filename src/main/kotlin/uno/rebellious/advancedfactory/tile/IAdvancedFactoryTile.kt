@@ -9,6 +9,15 @@ interface IAdvancedFactoryTile {
     var itemInventory: NonNullList<ItemStack>
 
     var inputStack: ItemStack
+        get() = itemInventory[0]
+        set(value) {
+            itemInventory[0] = value
+        }
+
     var outputStack: ItemStack
+        get() = itemInventory[1]
+        set(value) {
+            itemInventory[1] = value
+        }
 
 }

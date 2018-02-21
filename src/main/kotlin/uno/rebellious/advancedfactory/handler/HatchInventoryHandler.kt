@@ -42,7 +42,6 @@ class HatchInventoryHandler(var tile: TileEntityHatch, private val direction: It
     }
 
     override fun insertItem(slot: Int, stack: ItemStack, simulate: Boolean): ItemStack {
-        AdvancedFactory.logger?.log(Level.INFO, direction)
         if (direction == ItemDirection.OUTPUT) return stack
         if (stack.isEmpty) return ItemStack.EMPTY
         val insertSlot = 0

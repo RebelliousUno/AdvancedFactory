@@ -14,17 +14,7 @@ abstract class TileEntityHatch : TileEntity(), ITickable, IAdvancedFactoryTile {
     private var controllerTilePos: BlockPos? = null
     override var itemInventory = NonNullList.withSize(2, ItemStack.EMPTY)
 
-    override var inputStack: ItemStack
-        get() = itemInventory[0]
-        set(value) {
-            itemInventory[0] = value
-        }
 
-    override var outputStack: ItemStack
-        get() = itemInventory[1]
-        set(value) {
-            itemInventory[1] = value
-        }
 
     override var controllerTile: TileEntityController?
         get() = this._controller

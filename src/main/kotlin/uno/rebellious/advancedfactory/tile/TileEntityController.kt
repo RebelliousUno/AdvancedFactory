@@ -64,14 +64,18 @@ class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
 
         var anInputHatch: TileEntityInputHatch? = null
         var anOutputHatch: TileEntityOutputHatch? = null
+        var aSmelter: TileEntitySmelter? = null
 
 
         factoryContents.forEach{
             if (it.value == "inputHatch") anInputHatch = world.getTileEntity(it.key) as TileEntityInputHatch
             if (it.value == "outputHatch") anOutputHatch = world.getTileEntity(it.key) as TileEntityOutputHatch
+            if (it.value == "Smelter") aSmelter = world.getTileEntity(it.key) as TileEntitySmelter
         }
-        if (anInputHatch != null && anOutputHatch != null) factoryProgram += Pair(anInputHatch!!,anOutputHatch!!)
-
+        if (anInputHatch != null && anOutputHatch != null && aSmelter != null) {
+            factoryProgram += Pair(anInputHatch!!, aSmelter!!)
+            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
+        }
         AdvancedFactory.logger?.log(Level.INFO, factoryProgram)
     }
 
