@@ -5,15 +5,12 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ITickable
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
-import org.apache.logging.log4j.Level
-import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.BlockController
 
 abstract class TileEntityHatch : TileEntity(), ITickable, IAdvancedFactoryTile {
     private var _controller: TileEntityController? = null
     private var controllerTilePos: BlockPos? = null
     override var itemInventory = NonNullList.withSize(2, ItemStack.EMPTY)
-
 
 
     override var controllerTile: TileEntityController?

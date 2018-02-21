@@ -67,7 +67,7 @@ class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
         var aSmelter: TileEntitySmelter? = null
 
 
-        factoryContents.forEach{
+        factoryContents.forEach {
             if (it.value == "inputHatch") anInputHatch = world.getTileEntity(it.key) as TileEntityInputHatch
             if (it.value == "outputHatch") anOutputHatch = world.getTileEntity(it.key) as TileEntityOutputHatch
             if (it.value == "Smelter") aSmelter = world.getTileEntity(it.key) as TileEntitySmelter

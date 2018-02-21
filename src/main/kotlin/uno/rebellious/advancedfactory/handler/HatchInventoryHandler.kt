@@ -3,8 +3,6 @@ package uno.rebellious.advancedfactory.handler
 import net.minecraft.item.ItemStack
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.ItemHandlerHelper
-import org.apache.logging.log4j.Level
-import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityHatch
 
 class HatchInventoryHandler(var tile: TileEntityHatch, private val direction: ItemDirection) : IItemHandler {
