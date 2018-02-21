@@ -8,6 +8,7 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 
 class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
+    override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(1, ItemStack.EMPTY)
 
     private var smelterInput = NonNullList.withSize(1, ItemStack.EMPTY)
     private var smelterOutput = NonNullList.withSize(1, ItemStack.EMPTY)

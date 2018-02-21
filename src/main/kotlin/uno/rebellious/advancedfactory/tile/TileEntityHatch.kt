@@ -10,7 +10,7 @@ import uno.rebellious.advancedfactory.block.BlockController
 abstract class TileEntityHatch : TileEntity(), ITickable, IAdvancedFactoryTile {
     private var _controller: TileEntityController? = null
     private var controllerTilePos: BlockPos? = null
-    var itemInventory = NonNullList.withSize(2, ItemStack.EMPTY)
+    override var itemInventory = NonNullList.withSize(2, ItemStack.EMPTY)
 
     override var controllerTile: TileEntityController?
         get() = this._controller
