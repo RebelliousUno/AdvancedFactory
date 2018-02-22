@@ -6,7 +6,7 @@ import net.minecraft.util.NonNullList
 interface IAdvancedFactoryTile {
     var controllerTile: TileEntityController?
     val factoryBlockType: String
-    var itemInventory: NonNullList<ItemStack>
+    var itemInventory: NonNullList<ItemStack> //Needs to always be at least 2...
 
     var inputStack: ItemStack
         get() = itemInventory[0]

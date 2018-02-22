@@ -9,16 +9,18 @@ object Blocks {
     val inputHatch = BlockInputHatch()
     val outputHatch = BlockOutputHatch()
     val smelter = BlockSmelter()
+    val crusher = BlockCrusher()
 
     fun initModels() {
         controller.initModel()
         inputHatch.initModel()
         outputHatch.initModel()
         smelter.initModel()
+        crusher.initModel()
     }
 
     fun getBlockList(): Array<Block> {
-        return arrayOf(controller, inputHatch, outputHatch, smelter)
+        return arrayOf(controller, inputHatch, outputHatch, smelter, crusher)
     }
 
     fun getItemList(): Array<Item> {
@@ -26,8 +28,8 @@ object Blocks {
             ItemBlock(controller).setRegistryName(Blocks.controller.registryName),
             ItemBlock(inputHatch).setRegistryName(Blocks.inputHatch.registryName),
             ItemBlock(outputHatch).setRegistryName(Blocks.outputHatch.registryName),
-            ItemBlock(smelter).setRegistryName(Blocks.smelter.registryName)
-
+            ItemBlock(smelter).setRegistryName(Blocks.smelter.registryName),
+            ItemBlock(crusher).setRegistryName(Blocks.smelter.registryName)
         )
 
     }

@@ -10,18 +10,6 @@ import net.minecraft.util.math.BlockPos
 class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(3, ItemStack.EMPTY)
 
-    override var inputStack: ItemStack
-        get() = itemInventory[0]
-        set(value) {
-            itemInventory[0] = value
-        }
-
-    override var outputStack: ItemStack
-        get() = itemInventory[1]
-        set(value) {
-            itemInventory[1] = value
-        }
-
     private var currentSmeltingItem
         get() = itemInventory[2]
         set(value) {
