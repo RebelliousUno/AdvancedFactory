@@ -19,5 +19,4 @@ interface IAdvancedFactoryTile {
         set(value) {
             itemInventory[1] = value
         }
-
 }

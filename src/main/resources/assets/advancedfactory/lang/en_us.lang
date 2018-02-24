@@ -2,3 +2,5 @@ tile.controller.name=Advanced Factory Controller
 tile.inputhatch.name=Advanced Factory Input Hatch
 tile.outputhatch.name=Advanced Factory Output Hatch
 tile.smelter.name=Advanced Factory Smelter
+tile.crusher.name=Advanced Factory Crusher
+item.ironDust.name=Iron Dust

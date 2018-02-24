@@ -7,13 +7,15 @@ import net.minecraft.item.Item
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.minecraftforge.client.model.ModelLoader
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
 import uno.rebellious.advancedfactory.tile.TileEntityController
 
 abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
-
+    @SideOnly(Side.CLIENT)
     fun initModel() {
         AdvancedFactory.logger?.log(Level.INFO, "Init Model Registry Name is " + registryName)
         ModelLoader.setCustomModelResourceLocation(

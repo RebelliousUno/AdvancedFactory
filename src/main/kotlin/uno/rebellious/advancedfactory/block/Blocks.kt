@@ -29,7 +29,7 @@ object Blocks {
             ItemBlock(inputHatch).setRegistryName(Blocks.inputHatch.registryName),
             ItemBlock(outputHatch).setRegistryName(Blocks.outputHatch.registryName),
             ItemBlock(smelter).setRegistryName(Blocks.smelter.registryName),
-            ItemBlock(crusher).setRegistryName(Blocks.smelter.registryName)
+            ItemBlock(crusher).setRegistryName(Blocks.crusher.registryName)
         )
 
     }

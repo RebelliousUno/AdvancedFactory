@@ -11,10 +11,12 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.registry.GameRegistry
+import net.minecraftforge.oredict.OreDictionary
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.config.GeneralConfig
+import uno.rebellious.advancedfactory.item.Items
 import uno.rebellious.advancedfactory.tile.Tiles
 import java.io.File
 
@@ -44,6 +46,11 @@ open class CommonProxy {
             Blocks.getItemList().forEach {
                 event.registry.register(it)
             }
+            Items.getItemList().forEach {
+                event.registry.register(it)
+            }
+            Items.initModels()
+            Items.registerOres()
         }
     }
 

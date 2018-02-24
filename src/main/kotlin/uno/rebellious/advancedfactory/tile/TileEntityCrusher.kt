@@ -12,6 +12,7 @@ import uno.rebellious.advancedfactory.recipe.CrusherRecipes
 class TileEntityCrusher : TileEntity(), IAdvancedFactoryTile, ITickable {
     private var _controller: TileEntityController? = null
     private var controllerTilePos: BlockPos? = null
+    override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(3, ItemStack.EMPTY)
 
     override var controllerTile: TileEntityController?
         get() = this._controller
@@ -20,13 +21,12 @@ class TileEntityCrusher : TileEntity(), IAdvancedFactoryTile, ITickable {
             this.controllerTilePos = value?.pos
         }
 
-    override val factoryBlockType: String = "inputHatch"
+    override val factoryBlockType: String = "crusher"
 
-    override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(3, ItemStack.EMPTY)
-    var currentCrushingItem
-        get() = itemInventory[3]
+    private var currentCrushingItem
+        get() = itemInventory[2]
         set(value) {
-            itemInventory[3] = value
+            itemInventory[2] = value
         }
 
 
@@ -46,8 +46,12 @@ class TileEntityCrusher : TileEntity(), IAdvancedFactoryTile, ITickable {
         }
     }
 
+    private fun moveItemToCrush() {
+
+    }
+
     private fun canCrush() : Boolean {
-        return CrusherRecipes
+        return false
     }
 
     private fun getCrushTime() = 200
