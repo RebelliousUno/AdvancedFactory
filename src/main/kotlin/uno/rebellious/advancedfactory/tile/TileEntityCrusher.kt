@@ -42,7 +42,7 @@ class TileEntityCrusher : TileEntity(), IAdvancedFactoryTile, ITickable {
         //Do crushing operation
         if (currentCrushingItem != ItemStack.EMPTY) {
             if (currentCrushingTime == 0) {
-                crushItem()
+                if (crushItem()) currentCrushingItem = ItemStack.EMPTY
             } else if (currentCrushingTime > 0) {
                 currentCrushingTime--
             }
@@ -102,7 +102,6 @@ class TileEntityCrusher : TileEntity(), IAdvancedFactoryTile, ITickable {
                 // Both Empty so move items
                 outputStack = output1.copy()
                 if (Random().nextInt(100) < output2Chance) secondaryOutputStack = output2.copy()
-                currentCrushingItem = ItemStack.EMPTY
                 true
             }
         // If not empty check both are the right type and have space
@@ -112,7 +111,16 @@ class TileEntityCrusher : TileEntity(), IAdvancedFactoryTile, ITickable {
                     Helpers.spaceInStack(secondaryOutputStack) >= output2.count -> {
                 outputStack.grow(output1.count)
                 if (Random().nextInt(100) < output2Chance) secondaryOutputStack.grow(output2.count)
-                currentCrushingItem = ItemStack.EMPTY
+                true
+            }
+            outputStack.isEmpty && output2.item == secondaryOutputStack.item && Helpers.spaceInStack(secondaryOutputStack) >= output2.count -> {
+                outputStack = output1.copy()
+                secondaryOutputStack.grow(output2.count)
+                true
+            }
+            secondaryOutputStack.isEmpty && output1.item == outputStack.item && Helpers.spaceInStack(outputStack) >= output2.count -> {
+                outputStack.grow(output1.count)
+                secondaryOutputStack = output2.copy()
                 true
             }
             else -> false
