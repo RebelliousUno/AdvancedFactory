@@ -8,10 +8,11 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
+import uno.rebellious.advancedfactory.util.Types
 
 class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(2, ItemStack.EMPTY)
-    override val factoryBlockType: String = "controller"
+    override val factoryBlockType = Types.CONTROLLER
     override var inputStack: ItemStack = itemInventory[0]
     override var outputStack: ItemStack = itemInventory[1]
 
@@ -23,7 +24,7 @@ class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
         executeProgram()
     }
 
-    private val factoryContents = HashMap<BlockPos, String>() //TODO: Block or tile?
+    private val factoryContents = HashMap<BlockPos, Types>()
     private val factoryProgram = ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>>()
 
 
@@ -37,8 +38,8 @@ class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
                     it.first.outputStack = ItemStack.EMPTY
                 } else if (it.second.inputStack.item == it.first.outputStack.item) {
                     // same item check if space
-                    var inputSpace = it.second.inputStack.maxStackSize - it.second.inputStack.count
-                    var outputSize = it.first.outputStack.count
+                    val inputSpace = it.second.inputStack.maxStackSize - it.second.inputStack.count
+                    val outputSize = it.first.outputStack.count
 
                     if (inputSpace >= outputSize) {
                         it.second.inputStack.grow(outputSize)
@@ -65,16 +66,18 @@ class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
         var anInputHatch: TileEntityInputHatch? = null
         var anOutputHatch: TileEntityOutputHatch? = null
         var aSmelter: TileEntitySmelter? = null
+        var aCrusher: TileEntityCrusher? = null
 
 
         factoryContents.forEach {
-            if (it.value == "inputHatch") anInputHatch = world.getTileEntity(it.key) as TileEntityInputHatch
-            if (it.value == "outputHatch") anOutputHatch = world.getTileEntity(it.key) as TileEntityOutputHatch
-            if (it.value == "Smelter") aSmelter = world.getTileEntity(it.key) as TileEntitySmelter
+            if (it.value == Types.INPUT_HATCH) anInputHatch = world.getTileEntity(it.key) as TileEntityInputHatch
+            if (it.value == Types.OUTPUT_HATCH) anOutputHatch = world.getTileEntity(it.key) as TileEntityOutputHatch
+            if (it.value == Types.SMELTER) aSmelter = world.getTileEntity(it.key) as TileEntitySmelter
+            if (it.value == Types.CRUSHER) aCrusher = world.getTileEntity(it.key) as TileEntityCrusher
         }
-        if (anInputHatch != null && anOutputHatch != null && aSmelter != null) {
-            factoryProgram += Pair(anInputHatch!!, aSmelter!!)
-            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
+        if (anInputHatch != null && anOutputHatch != null && aSmelter != null && aCrusher != null) {
+            factoryProgram += Pair(anInputHatch!!, aCrusher!!)
+            factoryProgram += Pair(aCrusher!!, anOutputHatch!!)
         }
         AdvancedFactory.logger?.log(Level.INFO, factoryProgram)
     }

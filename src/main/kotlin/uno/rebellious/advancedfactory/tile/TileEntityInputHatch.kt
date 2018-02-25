@@ -6,9 +6,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider
 import net.minecraftforge.items.CapabilityItemHandler
 import uno.rebellious.advancedfactory.handler.HatchInventoryHandler
 import uno.rebellious.advancedfactory.handler.ItemDirection
+import uno.rebellious.advancedfactory.util.Types
 
 class TileEntityInputHatch : TileEntityHatch(), ICapabilityProvider {
-    override val factoryBlockType: String = "inputHatch"
+    override val factoryBlockType = Types.INPUT_HATCH
 
 
     override fun update() {

@@ -8,9 +8,10 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider
 import net.minecraftforge.items.CapabilityItemHandler
 import uno.rebellious.advancedfactory.handler.HatchInventoryHandler
 import uno.rebellious.advancedfactory.handler.ItemDirection
+import uno.rebellious.advancedfactory.util.Types
 
 class TileEntityOutputHatch : TileEntityHatch(), ITickable, ICapabilityProvider, IAdvancedFactoryTile {
-    override val factoryBlockType: String = "outputHatch"
+    override val factoryBlockType = Types.OUTPUT_HATCH
 
     override fun update() {
         //Check if still has a valid controller

@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ITickable
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
+import uno.rebellious.advancedfactory.util.Types
 
 class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(3, ItemStack.EMPTY)
@@ -28,7 +29,7 @@ class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
             this.controllerTilePos = value?.pos
         }
 
-    override val factoryBlockType: String = "Smelter"
+    override val factoryBlockType = Types.SMELTER
 
     override fun update() {
         //Do smelting operation

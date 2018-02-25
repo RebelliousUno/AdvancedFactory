@@ -21,18 +21,15 @@ data class CrusherRecipe(
             outputTwoAmount: Int,
             outputTwoChance: Int
         ): CrusherRecipe? {
-            AdvancedFactory.logger?.log(Level.INFO, inputOres)
-            AdvancedFactory.logger?.log(Level.INFO, outputOneOres)
-            AdvancedFactory.logger?.log(Level.INFO, outputOresTwo)
-            var inputItem = inputOres.firstOrNull { !it.isEmpty }
-            var outputOneItem = outputOneOres.firstOrNull{ !it.isEmpty }
+            val inputItem = inputOres.firstOrNull { !it.isEmpty }
+            val outputOneItem = outputOneOres.firstOrNull { !it.isEmpty }
             var outputTwoItem = outputOresTwo.firstOrNull { !it.isEmpty }
             if (inputItem == null || outputOneItem == null) return null
             if (CrusherRecipes.getRecipeFromInput(inputItem) != null) return null
             if (outputTwoItem == null) outputTwoItem = ItemStack.EMPTY
-            var sizedOutputOne = outputOneItem.copy()
+            val sizedOutputOne = outputOneItem.copy()
             sizedOutputOne.count = outputOneAmount
-            var sizedOutputTwo = outputTwoItem!!.copy() //Shouldn't be null should be ItemStack.EMPTY or something
+            val sizedOutputTwo = outputTwoItem!!.copy() //Shouldn't be null should be ItemStack.EMPTY or something
             sizedOutputTwo.count = outputTwoAmount
             return CrusherRecipe(inputItem, sizedOutputOne, sizedOutputTwo, outputTwoChance)
         }
@@ -47,10 +44,17 @@ object CrusherRecipes {
 
     fun registerCrusherRecipes() {
         arrayOf(
-            CrusherRecipe.createCrusherRecipes(OreDictionary.getOres("oreIron", false), OreDictionary.getOres("dustIron", false), 2, OreDictionary.getOres("dustGold", false), 1, 20)
+            CrusherRecipe.createCrusherRecipes(
+                OreDictionary.getOres("oreIron", false),
+                OreDictionary.getOres("dustIron", false),
+                2,
+                OreDictionary.getOres("dustGold", false),
+                1,
+                20
+            )
         )
-            .filter {it != null }
-            .forEach{ crusherRecipes.add(it!!) }
+            .filter { it != null }
+            .forEach { crusherRecipes.add(it!!) }
         AdvancedFactory.logger?.log(Level.INFO, "Crusher Recipes $crusherRecipes")
     }
 
