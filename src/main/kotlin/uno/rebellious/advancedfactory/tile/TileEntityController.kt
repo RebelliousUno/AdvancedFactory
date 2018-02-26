@@ -77,7 +77,8 @@ class TileEntityController : TileEntity(), ITickable, IAdvancedFactoryTile {
         }
         if (anInputHatch != null && anOutputHatch != null && aSmelter != null && aCrusher != null) {
             factoryProgram += Pair(anInputHatch!!, aCrusher!!)
-            factoryProgram += Pair(aCrusher!!, anOutputHatch!!)
+            factoryProgram += Pair(aCrusher!!, aSmelter!!)
+            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
         }
         AdvancedFactory.logger?.log(Level.INFO, factoryProgram)
     }

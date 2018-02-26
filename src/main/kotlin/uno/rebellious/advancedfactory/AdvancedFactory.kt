@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import org.apache.logging.log4j.Logger
 import uno.rebellious.advancedfactory.proxy.CommonProxy
 import uno.rebellious.advancedfactory.recipe.CrusherRecipes
+import uno.rebellious.advancedfactory.recipe.SmelterRecipes
 
 @Mod(
     modid = AdvancedFactory.MOD_ID,
@@ -41,7 +42,8 @@ object AdvancedFactory {
     @Mod.EventHandler
     fun postInit(event: FMLPostInitializationEvent) {
         proxy?.postInit(event)
-        CrusherRecipes.registerCrusherRecipes()
+        CrusherRecipes.initCrusherRecipes()
+        SmelterRecipes.initSmelterRecipes()
     }
 
     @Mod.EventHandler

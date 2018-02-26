@@ -6,6 +6,9 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ITickable
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
+import org.apache.logging.log4j.Level
+import uno.rebellious.advancedfactory.AdvancedFactory
+import uno.rebellious.advancedfactory.recipe.SmelterRecipes
 import uno.rebellious.advancedfactory.util.Types
 
 class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
@@ -52,14 +55,17 @@ class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
     }
 
     private fun canSmelt(): Boolean {
-        return !(inputStack.isEmpty || FurnaceRecipes.instance().getSmeltingResult(inputStack).isEmpty)
+        val emptyInput = inputStack.isEmpty
+        val recipe = SmelterRecipes.getRecipeFromInput(inputStack)
+        val furnaceRecipe = FurnaceRecipes.instance().getSmeltingResult(inputStack)
+        return !emptyInput && (!furnaceRecipe.isEmpty || recipe != null)
     }
 
     private fun getCookTime(): Int = 200
 
     private fun smeltItem() {
         if (currentSmeltingItem.isEmpty) return
-        val result = FurnaceRecipes.instance().getSmeltingResult(currentSmeltingItem)
+        val result = SmelterRecipes.getRecipeFromInput(currentSmeltingItem)?.outputStack ?: FurnaceRecipes.instance().getSmeltingResult(currentSmeltingItem)
         when {
             outputStack.isEmpty -> {
                 outputStack = result.copy()
