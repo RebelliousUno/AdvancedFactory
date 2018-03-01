@@ -2,6 +2,7 @@ package uno.rebellious.advancedfactory.block
 
 import net.minecraft.block.Block
 import net.minecraft.block.material.Material
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.block.model.ModelResourceLocation
 import net.minecraft.item.Item
 import net.minecraft.util.math.BlockPos
@@ -34,5 +35,19 @@ abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
             is TileEntityAdvancedFactory -> tileEntity.controllerTile
             else -> null
         }
+    }
+
+    override fun breakBlock(worldIn: World?, pos: BlockPos?, state: IBlockState?) {
+        AdvancedFactory.logger?.log(Level.INFO, "breakBlock")
+        if (worldIn != null && pos != null) {
+            AdvancedFactory.logger?.log(Level.INFO, "world and pos not null")
+            var tile = worldIn.getTileEntity(pos)
+            if (tile != null && tile is TileEntityAdvancedFactory) {
+                AdvancedFactory.logger?.log(Level.INFO, "$tile")
+                AdvancedFactory.logger?.log(Level.INFO, "${tile.controllerTile}")
+                tile.controllerTile?.checkNeighbours(true)
+            }
+        }
+        super.breakBlock(worldIn, pos, state)
     }
 }
