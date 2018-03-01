@@ -7,7 +7,7 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import uno.rebellious.advancedfactory.block.BlockController
 
-abstract class TileEntityHatch : TileEntity(), ITickable, IAdvancedFactoryTile {
+abstract class TileEntityHatch : TileEntityAdvancedFactory(), ITickable, IAdvancedFactoryTile {
     private var _controller: TileEntityController? = null
     private var controllerTilePos: BlockPos? = null
     override var itemInventory = NonNullList.withSize(2, ItemStack.EMPTY)

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
+import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityController
 
 abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
@@ -30,7 +31,7 @@ abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
         val tileEntity = worldIn.getTileEntity(pos)
         return when (tileEntity) {
             is TileEntityController -> tileEntity
-            is IAdvancedFactoryTile -> tileEntity.controllerTile
+            is TileEntityAdvancedFactory -> tileEntity.controllerTile
             else -> null
         }
     }

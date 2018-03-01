@@ -11,7 +11,7 @@ import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.recipe.SmelterRecipes
 import uno.rebellious.advancedfactory.util.Types
 
-class TileEntitySmelter : TileEntity(), IAdvancedFactoryTile, ITickable {
+class TileEntitySmelter : TileEntityAdvancedFactory(), IAdvancedFactoryTile, ITickable {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(3, ItemStack.EMPTY)
 
     private var currentSmeltingItem

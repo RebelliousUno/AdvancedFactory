@@ -85,7 +85,13 @@ object CrusherRecipes {
                 2,
                 OreDictionary.getOres("dustGold", false),
                 1,
-                20)
+                20),
+            CrusherRecipe.createCrusherRecipes(
+                OreDictionary.getOres("oreGold", false),
+                OreDictionary.getOres("dustGold", false),
+                2,
+                NonNullList.withSize(1, ItemStack.EMPTY), 0, 0
+            )
         )
             .filter { it != null }
             .forEach { crusherRecipes.add(it!!) }
