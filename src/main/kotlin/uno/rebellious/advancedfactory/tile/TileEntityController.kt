@@ -17,10 +17,9 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable, IAdvancedFa
 
 
     override fun update() {
-        this.factoryContents.put(this.pos, factoryBlockType)
         this.checkNeighbours()
-        makeBasicProgram()
-        executeProgram()
+        //makeBasicProgram()
+        //executeProgram()
     }
 
     private val factoryContents = HashMap<BlockPos, Types>()
@@ -49,8 +48,6 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable, IAdvancedFa
                     }
                 }
             }
-
-
         }
     }
 
@@ -79,46 +76,23 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable, IAdvancedFa
             factoryProgram += Pair(aCrusher!!, aSmelter!!)
             factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
         }
-        AdvancedFactory.logger?.log(Level.INFO, factoryProgram)
+        //AdvancedFactory.logger?.log(Level.INFO, factoryProgram)
     }
 
-    private fun checkNeighbours() {
+    fun checkNeighbours(recheckMultiblock: Boolean = false) {
+        if (recheckMultiblock) {
+            AdvancedFactory.logger?.log(Level.INFO, "Rechecking Multiblock")
+            factoryContents.keys.forEach {
+                var mysteryTile = this.world.getTileEntity(it)
+                if (mysteryTile is TileEntityAdvancedFactory) mysteryTile.controllerTile = null
+            }
+            factoryContents.clear()
+            controllerTile = this
+        }
         var checkedList = HashSet<BlockPos>()
         checkedList.add(pos)
-        factoryContents.put(pos, factoryBlockType)
+        factoryContents[pos] = factoryBlockType
         checkNeighbours(factoryContents, this, checkedList)
-//      Get each neighbour,
-//      For each neighbour that's not in the list tell it to get it's neighbours (pass it the list, and the controller)
-
-//        val pos = this.pos
-//        val neighbours = arrayOf(pos.up(), pos.down(), pos.east(), pos.west(), pos.north(), pos.south())
-//        neighbours.forEach { block ->
-//            val mysteryTile = this.world.getTileEntity(block)
-//            when (mysteryTile) {
-//                is TileEntityController -> //Adjacent block is another controller...
-//                    // make sure it's not in our list
-//                    factoryContents.remove(block)
-//                is TileEntityAdvancedFactory -> // Adjacent block is an AdvancedFactory
-//                    // If it doesn't have a controller set it to be ours, and add it to the list
-//                    when {
-//                        mysteryTile.controllerTile == null -> {
-//                            mysteryTile.controllerTile = this
-//                            factoryContents.put(block, mysteryTile.factoryBlockType)
-//                        }
-//                        mysteryTile.controllerTile == this -> {
-//                            // If it is us then make sure it's in our list
-//                            factoryContents.put(block, mysteryTile.factoryBlockType)
-//                        }
-//                        else -> {
-//                            // Otherwise it's got a controller that's not us
-//                            // Make sure it's not in our list
-//                            factoryContents.remove(block)
-//                        }
-//                    }
-//                else -> // Not an AdvFactoryBlock remove from our list
-//                    factoryContents.remove(block)
-//            }
-//        }
     }
 
     override var controllerTile: TileEntityController?
