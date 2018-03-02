@@ -81,7 +81,6 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable, IAdvancedFa
 
     fun checkNeighbours(recheckMultiblock: Boolean = false) {
         if (recheckMultiblock) {
-            AdvancedFactory.logger?.log(Level.INFO, "Rechecking Multiblock")
             factoryContents.keys.forEach {
                 var mysteryTile = this.world.getTileEntity(it)
                 if (mysteryTile is TileEntityAdvancedFactory) mysteryTile.controllerTile = null

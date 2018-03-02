@@ -37,16 +37,14 @@ abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
         }
     }
 
-    override fun breakBlock(worldIn: World?, pos: BlockPos?, state: IBlockState?) {
-        AdvancedFactory.logger?.log(Level.INFO, "breakBlock")
-        if (worldIn != null && pos != null) {
-            AdvancedFactory.logger?.log(Level.INFO, "world and pos not null")
-            var tile = worldIn.getTileEntity(pos)
-            if (tile != null && tile is TileEntityAdvancedFactory) {
-                AdvancedFactory.logger?.log(Level.INFO, "$tile")
-                AdvancedFactory.logger?.log(Level.INFO, "${tile.controllerTile}")
-                tile.controllerTile?.checkNeighbours(true)
-            }
+    override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
+        var tile = worldIn.getTileEntity(pos)
+        if (tile is TileEntityAdvancedFactory) {
+           var controller = tile.controllerTile
+            super.breakBlock(worldIn, pos, state)
+            controller?.checkNeighbours(true)
+        } else {
+            super.breakBlock(worldIn, pos, state)
         }
         super.breakBlock(worldIn, pos, state)
     }
