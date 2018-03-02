@@ -43,8 +43,7 @@ abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
            var controller = tile.controllerTile
             super.breakBlock(worldIn, pos, state)
             controller?.checkNeighbours(true)
-        } else {
-            super.breakBlock(worldIn, pos, state)
+            return
         }
         super.breakBlock(worldIn, pos, state)
     }
