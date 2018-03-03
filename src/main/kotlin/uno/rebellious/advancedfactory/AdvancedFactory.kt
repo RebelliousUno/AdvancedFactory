@@ -5,7 +5,9 @@ import net.minecraftforge.fml.common.SidedProxy
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.minecraftforge.fml.common.network.NetworkRegistry
 import org.apache.logging.log4j.Logger
+import uno.rebellious.advancedfactory.gui.GuiHandler
 import uno.rebellious.advancedfactory.proxy.CommonProxy
 import uno.rebellious.advancedfactory.recipe.CrusherRecipes
 import uno.rebellious.advancedfactory.recipe.SmelterRecipes
@@ -48,6 +50,7 @@ object AdvancedFactory {
 
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, GuiHandler())
         proxy?.init(event)
     }
 }

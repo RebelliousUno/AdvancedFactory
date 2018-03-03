@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
+import uno.rebellious.advancedfactory.gui.GuiHandler
 import uno.rebellious.advancedfactory.tile.TileEntityController
 
 class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
@@ -28,18 +29,31 @@ class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
     }
 
     override fun onBlockActivated(
-        worldIn: World?,
-        pos: BlockPos?,
-        state: IBlockState?,
-        playerIn: EntityPlayer?,
-        hand: EnumHand?,
-        facing: EnumFacing?,
+        worldIn: World,
+        pos: BlockPos,
+        state: IBlockState,
+        playerIn: EntityPlayer,
+        hand: EnumHand,
+        facing: EnumFacing,
         hitX: Float,
         hitY: Float,
         hitZ: Float
     ): Boolean {
-        if (worldIn == null || worldIn.isRemote) return true
-        this.getFactoryAt(worldIn, pos)?.listBlocks()
+        AdvancedFactory.logger?.log(Level.INFO, "worldIn.isRemote ${worldIn.isRemote}")
+        if (!worldIn.isRemote) {
+            this.getFactoryAt(worldIn, pos)?.listBlocks()
+        } else {
+            var controllerTile = worldIn.getTileEntity(pos) as? TileEntityController
+            if (controllerTile != null)
+                playerIn.openGui(
+                    AdvancedFactory.instance!!,
+                    GuiHandler.GuiTypes.CONTROLLER.ordinal,
+                    worldIn,
+                    pos.x,
+                    pos.y,
+                    pos.z
+                )
+        }
         return true
     }
 }
