@@ -43,8 +43,8 @@ data class SmelterRecipe(val input: ItemStack, val outputStack: ItemStack) {
             output: NonNullList<ItemStack>,
             outputAmount: Int
         ): SmelterRecipe? {
-            val inputItem = input.firstOrNull {!it.isEmpty } ?: return null
-            val outputItem = output.firstOrNull {!it.isEmpty} ?: return null
+            val inputItem = input.firstOrNull { !it.isEmpty } ?: return null
+            val outputItem = output.firstOrNull { !it.isEmpty } ?: return null
             if (SmelterRecipes.getRecipeFromInput(inputItem) != null) return null
             val sizedInputItem = inputItem.copy()
             sizedInputItem.count = inputAmount
@@ -60,8 +60,18 @@ object SmelterRecipes {
 
     fun initSmelterRecipes() {
         arrayOf(
-            SmelterRecipe.createSmelterRecipe(OreDictionary.getOres("dustIron"), 1, OreDictionary.getOres("ingotIron"), 1),
-            SmelterRecipe.createSmelterRecipe(OreDictionary.getOres("dustGold"), 1, OreDictionary.getOres("ingotGold"), 1)
+            SmelterRecipe.createSmelterRecipe(
+                OreDictionary.getOres("dustIron"),
+                1,
+                OreDictionary.getOres("ingotIron"),
+                1
+            ),
+            SmelterRecipe.createSmelterRecipe(
+                OreDictionary.getOres("dustGold"),
+                1,
+                OreDictionary.getOres("ingotGold"),
+                1
+            )
         )
             .filter { it != null }
             .forEach { smelterRecipes.add(it!!) }
@@ -85,7 +95,8 @@ object CrusherRecipes {
                 2,
                 OreDictionary.getOres("dustGold", false),
                 1,
-                20),
+                20
+            ),
             CrusherRecipe.createCrusherRecipes(
                 OreDictionary.getOres("oreGold", false),
                 OreDictionary.getOres("dustGold", false),

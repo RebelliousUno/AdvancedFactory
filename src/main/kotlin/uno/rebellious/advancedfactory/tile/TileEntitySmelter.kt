@@ -2,12 +2,9 @@ package uno.rebellious.advancedfactory.tile
 
 import net.minecraft.item.ItemStack
 import net.minecraft.item.crafting.FurnaceRecipes
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ITickable
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
-import org.apache.logging.log4j.Level
-import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.recipe.SmelterRecipes
 import uno.rebellious.advancedfactory.util.Types
 
@@ -65,7 +62,8 @@ class TileEntitySmelter : TileEntityAdvancedFactory(), IAdvancedFactoryTile, ITi
 
     private fun smeltItem() {
         if (currentSmeltingItem.isEmpty) return
-        val result = SmelterRecipes.getRecipeFromInput(currentSmeltingItem)?.outputStack ?: FurnaceRecipes.instance().getSmeltingResult(currentSmeltingItem)
+        val result = SmelterRecipes.getRecipeFromInput(currentSmeltingItem)?.outputStack
+                ?: FurnaceRecipes.instance().getSmeltingResult(currentSmeltingItem)
         when {
             outputStack.isEmpty -> {
                 outputStack = result.copy()

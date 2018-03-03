@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
-import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
 import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityController
 
@@ -40,7 +39,7 @@ abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
     override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
         var tile = worldIn.getTileEntity(pos)
         if (tile is TileEntityAdvancedFactory) {
-           var controller = tile.controllerTile
+            var controller = tile.controllerTile
             super.breakBlock(worldIn, pos, state)
             controller?.checkNeighbours(true)
             return

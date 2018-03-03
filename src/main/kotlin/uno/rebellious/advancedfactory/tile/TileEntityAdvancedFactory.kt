@@ -2,8 +2,6 @@ package uno.rebellious.advancedfactory.tile
 
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.math.BlockPos
-import org.apache.logging.log4j.Level
-import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.util.Types
 
 abstract class TileEntityAdvancedFactory : TileEntity() {
@@ -11,10 +9,14 @@ abstract class TileEntityAdvancedFactory : TileEntity() {
     abstract val factoryBlockType: Types
 
 
-    fun checkNeighbours(multiblockContents: HashMap<BlockPos, Types>, controller: TileEntityController, checkedList: HashSet<BlockPos>) {
+    fun checkNeighbours(
+        multiblockContents: HashMap<BlockPos, Types>,
+        controller: TileEntityController,
+        checkedList: HashSet<BlockPos>
+    ) {
         val neighbours = arrayOf(pos.up(), pos.down(), pos.east(), pos.west(), pos.north(), pos.south())
         neighbours
-            .filter{ !checkedList.contains(it) } // Neighbours not already checked
+            .filter { !checkedList.contains(it) } // Neighbours not already checked
             .forEach {
                 checkedList += it // First thing...add to checkedList...otherwise it could stay forever
                 val mysteryTile = this.world.getTileEntity(it)// Tile must not be an advanced Factory tile

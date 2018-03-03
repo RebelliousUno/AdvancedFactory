@@ -1,7 +1,6 @@
 package uno.rebellious.advancedfactory.tile
 
 import net.minecraft.item.ItemStack
-import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.ITickable
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
@@ -113,7 +112,9 @@ class TileEntityCrusher : TileEntityAdvancedFactory(), IAdvancedFactoryTile, ITi
                 if (Random().nextInt(100) < output2Chance) secondaryOutputStack.grow(output2.count)
                 true
             }
-            outputStack.isEmpty && output2.item == secondaryOutputStack.item && Helpers.spaceInStack(secondaryOutputStack) >= output2.count -> {
+            outputStack.isEmpty && output2.item == secondaryOutputStack.item && Helpers.spaceInStack(
+                secondaryOutputStack
+            ) >= output2.count -> {
                 outputStack = output1.copy()
                 secondaryOutputStack.grow(output2.count)
                 true

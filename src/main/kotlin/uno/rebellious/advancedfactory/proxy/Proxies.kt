@@ -78,11 +78,14 @@ open class CommonProxy {
 }
 
 @Mod.EventBusSubscriber
-class ServerProxy : CommonProxy()
+class ServerProxy : CommonProxy() {
+
+}
 
 
 @Mod.EventBusSubscriber
 class ClientProxy : CommonProxy() {
+
     companion object {
         @JvmStatic
         @SubscribeEvent
