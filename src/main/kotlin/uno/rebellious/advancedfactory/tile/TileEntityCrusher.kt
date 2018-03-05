@@ -9,7 +9,7 @@ import uno.rebellious.advancedfactory.util.Helpers
 import uno.rebellious.advancedfactory.util.Types
 import java.util.*
 
-class TileEntityCrusher : TileEntityAdvancedFactory(), IAdvancedFactoryTile, ITickable {
+class TileEntityCrusher : TileEntityAdvancedFactory(), ITickable {
     private var _controller: TileEntityController? = null
     private var controllerTilePos: BlockPos? = null
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(4, ItemStack.EMPTY)

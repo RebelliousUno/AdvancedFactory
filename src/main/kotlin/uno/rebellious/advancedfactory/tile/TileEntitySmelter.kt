@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos
 import uno.rebellious.advancedfactory.recipe.SmelterRecipes
 import uno.rebellious.advancedfactory.util.Types
 
-class TileEntitySmelter : TileEntityAdvancedFactory(), IAdvancedFactoryTile, ITickable {
+class TileEntitySmelter : TileEntityAdvancedFactory(), ITickable {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(3, ItemStack.EMPTY)
 
     private var currentSmeltingItem

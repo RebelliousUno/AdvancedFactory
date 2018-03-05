@@ -1,7 +1,6 @@
 package uno.rebellious.advancedfactory.tile
 
 import net.minecraft.util.EnumFacing
-import net.minecraft.util.ITickable
 import net.minecraft.util.math.BlockPos
 import net.minecraftforge.common.capabilities.Capability
 import net.minecraftforge.common.capabilities.ICapabilityProvider
@@ -10,7 +9,7 @@ import uno.rebellious.advancedfactory.handler.HatchInventoryHandler
 import uno.rebellious.advancedfactory.handler.ItemDirection
 import uno.rebellious.advancedfactory.util.Types
 
-class TileEntityOutputHatch : TileEntityHatch(), ITickable, ICapabilityProvider, IAdvancedFactoryTile {
+class TileEntityOutputHatch : TileEntityHatch(), ICapabilityProvider {
     override val factoryBlockType = Types.OUTPUT_HATCH
 
     override fun update() {

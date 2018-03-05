@@ -2,8 +2,12 @@ package uno.rebellious.advancedfactory.util
 
 import net.minecraft.item.ItemStack
 
-enum class Types {
-    INPUT_HATCH, OUTPUT_HATCH, SMELTER, CRUSHER, CONTROLLER
+enum class Types(val unlocalizedName: kotlin.String) {
+    INPUT_HATCH("Input Hatch"),
+    OUTPUT_HATCH("Output Hatch"),
+    SMELTER("Smelter"),
+    CRUSHER("Crusher"),
+    CONTROLLER("Crusher")
 }
 
 object Helpers {

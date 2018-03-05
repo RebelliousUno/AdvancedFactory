@@ -23,6 +23,4 @@ class GuiHandler : IGuiHandler {
     enum class GuiTypes {
         CONTROLLER
     }
-
-
 }

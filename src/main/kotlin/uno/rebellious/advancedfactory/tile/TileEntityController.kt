@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.util.Types
 
-class TileEntityController : TileEntityAdvancedFactory(), ITickable, IAdvancedFactoryTile {
+class TileEntityController : TileEntityAdvancedFactory(), ITickable {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(2, ItemStack.EMPTY)
     override val factoryBlockType = Types.CONTROLLER
     override var inputStack: ItemStack = itemInventory[0]
@@ -18,12 +18,12 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable, IAdvancedFa
 
     override fun update() {
         this.checkNeighbours()
-        //makeBasicProgram()
+        makeBasicProgram()
         //executeProgram()
     }
 
-    private val factoryContents = HashMap<BlockPos, Types>()
-    private val factoryProgram = ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>>()
+    val factoryContents = HashMap<BlockPos, Types>()
+    val factoryProgram = ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>>()
 
 
     private fun executeProgram() {
@@ -72,6 +72,18 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable, IAdvancedFa
             if (it.value == Types.CRUSHER) aCrusher = world.getTileEntity(it.key) as TileEntityCrusher
         }
         if (anInputHatch != null && anOutputHatch != null && aSmelter != null && aCrusher != null) {
+            factoryProgram += Pair(anInputHatch!!, aCrusher!!)
+            factoryProgram += Pair(aCrusher!!, aSmelter!!)
+            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
+            factoryProgram += Pair(anOutputHatch!!, anInputHatch!!)
+            factoryProgram += Pair(anInputHatch!!, aCrusher!!)
+            factoryProgram += Pair(aCrusher!!, aSmelter!!)
+            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
+            factoryProgram += Pair(anOutputHatch!!, anInputHatch!!)
+            factoryProgram += Pair(anInputHatch!!, aCrusher!!)
+            factoryProgram += Pair(aCrusher!!, aSmelter!!)
+            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
+            factoryProgram += Pair(anOutputHatch!!, anInputHatch!!)
             factoryProgram += Pair(anInputHatch!!, aCrusher!!)
             factoryProgram += Pair(aCrusher!!, aSmelter!!)
             factoryProgram += Pair(aSmelter!!, anOutputHatch!!)

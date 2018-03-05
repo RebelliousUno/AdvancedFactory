@@ -3,6 +3,7 @@ package uno.rebellious.advancedfactory.block
 import net.minecraft.block.Block
 import net.minecraft.item.Item
 import net.minecraft.item.ItemBlock
+import uno.rebellious.advancedfactory.util.Types
 
 object Blocks {
     val controller = BlockController()
@@ -31,7 +32,16 @@ object Blocks {
             ItemBlock(smelter).setRegistryName(Blocks.smelter.registryName),
             ItemBlock(crusher).setRegistryName(Blocks.crusher.registryName)
         )
+    }
 
+    fun getBlockFromType(type: Types): BlockAdvancedFactory {
+        return when (type) {
+            Types.CONTROLLER -> controller
+            Types.INPUT_HATCH -> inputHatch
+            Types.OUTPUT_HATCH -> outputHatch
+            Types.SMELTER -> smelter
+            Types.CRUSHER -> crusher
+        }
     }
 
 }

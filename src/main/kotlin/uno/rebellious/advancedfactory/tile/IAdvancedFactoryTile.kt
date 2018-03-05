@@ -2,9 +2,11 @@ package uno.rebellious.advancedfactory.tile
 
 import net.minecraft.item.ItemStack
 import net.minecraft.util.NonNullList
+import uno.rebellious.advancedfactory.util.Types
 
 interface IAdvancedFactoryTile {
     var itemInventory: NonNullList<ItemStack> //Needs to always be at least 2...
+    val factoryBlockType: Types
 
     var inputStack: ItemStack
         get() = itemInventory[0]
