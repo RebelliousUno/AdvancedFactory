@@ -10,40 +10,58 @@ import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
 import uno.rebellious.advancedfactory.tile.TileEntityController
 import uno.rebellious.advancedfactory.util.Types
+import java.lang.Math.max
 
 
 class GuiController(val tile: TileEntityController?) : GuiBase() {
     private var xSize: Int = 176
-    private var ySize: Int = 131
+    private var ySize: Int = 138
 
     private var guiLeft: Int = 0
     private var guiTop: Int = 0
 
     private var buttons = mutableListOf<GuiButton>()
     private var blockList = ArrayList<Triple<Types, Int, Int>>()
+    private var pageNo = 0
 
     override fun initGui() {
         AdvancedFactory.logger?.log(Level.INFO, "initGUI")
         super.initGui()
         guiLeft = (width - xSize) / 2
         guiTop = (height - ySize) / 2
-        //makeButtonList()
     }
 
     private fun makeButtonList() {
         var i = 0
-        val height = fontRenderer.FONT_HEIGHT + 5
-        tile?.factoryContents
-            ?.filterValues { it != Types.CONTROLLER }
-            ?.forEach {
-                var name = it.value.unlocalizedName
-                var width = fontRenderer.getStringWidth(name) + 10
-                buttonList.add(GuiButton(i, guiLeft, i * 20, width, height, name))
-                var t = Triple(it.value, guiLeft + width, i * 20)
-                blockList.add(t)
-                drawItemStack(ItemStack(Blocks.controller), guiLeft + width, i * 20, "")
-                i++
-            }
+        val buttonHeight = 20
+        val padding = 5
+        val buttonBottom = guiTop + ySize - buttonHeight - padding
+        val buttonWidth = max(fontRenderer.getStringWidth("Next"), fontRenderer.getStringWidth("Prev")) + 10
+
+        val leftButtonX = guiLeft + padding
+        val rightButtonX = guiLeft + xSize - buttonWidth - padding
+
+
+        val prevButton = GuiButton(i, leftButtonX, buttonBottom,"Prev")
+        prevButton.setWidth(buttonWidth)
+        i++
+        val nextButton = GuiButton(i, rightButtonX, buttonBottom,"Next")
+        nextButton.setWidth(buttonWidth)
+
+        buttonList.add(prevButton)
+        buttonList.add(nextButton)
+
+//        tile?.factoryContents
+//            ?.filterValues { it != Types.CONTROLLER }
+//            ?.forEach {
+//                var name = it.value.unlocalizedName
+//                var width = fontRenderer.getStringWidth(name) + 10
+//                buttonList.add(GuiButton(i, guiLeft, i * 20, width, height, name))
+//                var t = Triple(it.value, guiLeft + width, i * 20)
+//                blockList.add(t)
+//                drawItemStack(ItemStack(Blocks.controller), guiLeft + width, i * 20, "")
+//                i++
+//            }
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -53,12 +71,8 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     }
 
     private fun drawScreenPost(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        GlStateManager.color(1F, 1F, 1F)
-        var res = ResourceLocation(AdvancedFactory.MOD_ID, "textures/gui/gui_controller.png")
-
-        this.mc.textureManager.bindTexture(res)
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize)
         drawProgram()
+        makeButtonList()
     }
 
     private fun drawProgram() {
@@ -69,13 +83,25 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         var verticalGap = 28
         var rowCount = 0
 
-        var flow = ArrayList<IAdvancedFactoryTile>()
+        var flow = ArrayList<ArrayList<IAdvancedFactoryTile>>()
+
+        var currentFlow = ArrayList<IAdvancedFactoryTile>()
+        flow.add(currentFlow)
 
         tile?.factoryProgram?.forEach {
-            if (flow.isEmpty()) flow.add(it.first)
-            if (flow.last() == it.first) flow.add(it.second)
+            if (currentFlow.isEmpty())
+                currentFlow.add(it.first)
+            if (currentFlow.last() != it.first){
+                currentFlow = ArrayList()
+                flow.add(currentFlow)
+            }
+            currentFlow.add(it.second)
+
         }
-        flow.forEach {
+
+        assert(flow.isNotEmpty())
+
+        flow[0].forEach {
             var stack = Blocks.getBlockFromType(it.factoryBlockType)
             drawItemStack(ItemStack(stack), x, y, "")
             slotCount++
@@ -95,7 +121,12 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     }
 
     private fun drawScreenPre(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        drawDefaultBackground()
+        GlStateManager.color(1F, 1F, 1F)
+        var res = ResourceLocation(AdvancedFactory.MOD_ID, "textures/gui/gui_controller.png")
 
+        this.mc.textureManager.bindTexture(res)
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize)
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
