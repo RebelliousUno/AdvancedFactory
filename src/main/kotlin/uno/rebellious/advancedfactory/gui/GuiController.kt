@@ -30,6 +30,7 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         super.initGui()
         guiLeft = (width - xSize) / 2
         guiTop = (height - ySize) / 2
+        makeButtonList()
     }
 
     private fun pageText() {
@@ -82,7 +83,6 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
 
     private fun drawScreenPost(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawProgram()
-        makeButtonList()
         pageText()
     }
 
@@ -140,7 +140,18 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
-        AdvancedFactory.logger?.log(Level.INFO, "$mouseX, $mouseY, $mouseButton")
+        //AdvancedFactory.logger?.log(Level.INFO, "$mouseX, $mouseY, $mouseButton")
+    }
+
+    override fun actionPerformed(button: GuiButton?) {
+        AdvancedFactory.logger?.log(Level.INFO, button)
+        if (button?.id == 1 && pageNo > 0) {
+            pageNo --
+        }
+        if (button?.id == 2 && pageNo < totalPages) {
+            pageNo ++
+        }
+        super.actionPerformed(button)
     }
 }
 
