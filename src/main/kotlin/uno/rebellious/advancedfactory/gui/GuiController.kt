@@ -14,6 +14,10 @@ import java.lang.Math.max
 
 
 class GuiController(val tile: TileEntityController?) : GuiBase() {
+    private enum class ControllerButtons {
+        NEXT, PREV
+    }
+
     private var xSize: Int = 176
     private var ySize: Int = 138
 
@@ -44,7 +48,6 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     }
 
     private fun makeButtonList() {
-        var i = 0
         val buttonHeight = 20
         val padding = 5
         val buttonBottom = guiTop + ySize - buttonHeight - padding
@@ -53,10 +56,9 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         val leftButtonX = guiLeft + padding
         val rightButtonX = guiLeft + xSize - buttonWidth - padding
 
-        val prevButton = GuiButton(i, leftButtonX, buttonBottom, "Prev")
+        val prevButton = GuiButton(ControllerButtons.PREV.ordinal, leftButtonX, buttonBottom, "Prev")
         prevButton.setWidth(buttonWidth)
-        i++
-        val nextButton = GuiButton(i, rightButtonX, buttonBottom, "Next")
+        val nextButton = GuiButton(ControllerButtons.NEXT.ordinal, rightButtonX, buttonBottom, "Next")
         nextButton.setWidth(buttonWidth)
 
         buttonList.add(prevButton)
@@ -144,11 +146,11 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     }
 
     override fun actionPerformed(button: GuiButton?) {
-        AdvancedFactory.logger?.log(Level.INFO, button)
-        if (button?.id == 1 && pageNo > 0) {
+        AdvancedFactory.logger?.log(Level.INFO, button?.id)
+        if (button?.id == ControllerButtons.PREV.ordinal && pageNo > 0) {
             pageNo --
         }
-        if (button?.id == 2 && pageNo < totalPages) {
+        if (button?.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
             pageNo ++
         }
         super.actionPerformed(button)
