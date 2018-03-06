@@ -52,7 +52,6 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         val leftButtonX = guiLeft + padding
         val rightButtonX = guiLeft + xSize - buttonWidth - padding
 
-
         val prevButton = GuiButton(i, leftButtonX, buttonBottom, "Prev")
         prevButton.setWidth(buttonWidth)
         i++
@@ -108,12 +107,9 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
                 flow.add(currentFlow)
             }
             currentFlow.add(it.second)
-
         }
-
         assert(flow.isNotEmpty())
-
-        flow[0].forEach {
+        flow[pageNo].forEach {
             var stack = Blocks.getBlockFromType(it.factoryBlockType)
             drawItemStack(ItemStack(stack), x, y, "")
             slotCount++
