@@ -27,9 +27,9 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.0.2512"
+    version = "1.12.2-14.23.2.2611"
     runDir = "run"
-    mappings = "snapshot_20170624"
+    mappings = "snapshot_20171003"
 }
 
 repositories {
@@ -42,7 +42,7 @@ repositories {
 
 dependencies {
     compile group: "net.shadowfacts", name: "Forgelin", version: "1.6.0"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
