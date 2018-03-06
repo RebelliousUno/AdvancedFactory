@@ -4,7 +4,11 @@
     "model": "advancedfactory:outputhatch"
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
   }
 }

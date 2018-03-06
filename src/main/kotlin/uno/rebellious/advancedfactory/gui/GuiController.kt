@@ -23,12 +23,23 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     private var buttons = mutableListOf<GuiButton>()
     private var blockList = ArrayList<Triple<Types, Int, Int>>()
     private var pageNo = 0
+    private var totalPages = 0
 
     override fun initGui() {
         AdvancedFactory.logger?.log(Level.INFO, "initGUI")
         super.initGui()
         guiLeft = (width - xSize) / 2
         guiTop = (height - ySize) / 2
+    }
+
+    private fun pageText() {
+        val text = "Page ${pageNo + 1} of $totalPages"
+        val textWidth = fontRenderer.getStringWidth(text)
+        val padding = 10
+        val textBottom = guiTop + ySize - fontRenderer.FONT_HEIGHT - padding
+        val textLeft = (guiLeft + (xSize / 2)) - (textWidth / 2)
+
+        fontRenderer.drawString(text, textLeft, textBottom, 4210752)
     }
 
     private fun makeButtonList() {
@@ -42,10 +53,10 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         val rightButtonX = guiLeft + xSize - buttonWidth - padding
 
 
-        val prevButton = GuiButton(i, leftButtonX, buttonBottom,"Prev")
+        val prevButton = GuiButton(i, leftButtonX, buttonBottom, "Prev")
         prevButton.setWidth(buttonWidth)
         i++
-        val nextButton = GuiButton(i, rightButtonX, buttonBottom,"Next")
+        val nextButton = GuiButton(i, rightButtonX, buttonBottom, "Next")
         nextButton.setWidth(buttonWidth)
 
         buttonList.add(prevButton)
@@ -73,6 +84,7 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     private fun drawScreenPost(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawProgram()
         makeButtonList()
+        pageText()
     }
 
     private fun drawProgram() {
@@ -91,7 +103,7 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         tile?.factoryProgram?.forEach {
             if (currentFlow.isEmpty())
                 currentFlow.add(it.first)
-            if (currentFlow.last() != it.first){
+            if (currentFlow.last() != it.first) {
                 currentFlow = ArrayList()
                 flow.add(currentFlow)
             }
@@ -118,6 +130,7 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
             }
             y = guiTop + 10 + (rowCount * verticalGap)
         }
+        totalPages = flow.size
     }
 
     private fun drawScreenPre(mouseX: Int, mouseY: Int, partialTicks: Float) {

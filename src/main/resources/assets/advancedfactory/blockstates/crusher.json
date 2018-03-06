@@ -4,7 +4,11 @@
     "model": "advancedfactory:crusher"
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
   }
 }

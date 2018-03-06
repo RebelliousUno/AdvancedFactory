@@ -4,7 +4,11 @@
     "model": "advancedfactory:controller"
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}]
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
   }
 }
