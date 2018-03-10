@@ -14,8 +14,8 @@ import java.lang.Math.max
 
 
 class GuiController(val tile: TileEntityController?) : GuiBase() {
-    private enum class ControllerButtons {
-        NEXT, PREV
+    private enum class ControllerButtons(val buttonText: String) {
+        NEXT("Next"), PREV("Prev"), ADD_LINK("Add Link")
     }
 
     private var xSize: Int = 176
@@ -51,19 +51,28 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         val buttonHeight = 20
         val padding = 5
         val buttonBottom = guiTop + ySize - buttonHeight - padding
-        val buttonWidth = max(fontRenderer.getStringWidth("Next"), fontRenderer.getStringWidth("Prev")) + 10
+        val buttonWidth = 10 + max(
+            fontRenderer.getStringWidth(ControllerButtons.NEXT.buttonText),
+            fontRenderer.getStringWidth(ControllerButtons.PREV.buttonText)
+        )
 
         val leftButtonX = guiLeft + padding
         val rightButtonX = guiLeft + xSize - buttonWidth - padding
 
-        val prevButton = GuiButton(ControllerButtons.PREV.ordinal, leftButtonX, buttonBottom, "Prev")
+        val prevButton =
+            GuiButton(ControllerButtons.PREV.ordinal, leftButtonX, buttonBottom, ControllerButtons.PREV.buttonText)
         prevButton.setWidth(buttonWidth)
-        val nextButton = GuiButton(ControllerButtons.NEXT.ordinal, rightButtonX, buttonBottom, "Next")
+        val nextButton =
+            GuiButton(ControllerButtons.NEXT.ordinal, rightButtonX, buttonBottom, ControllerButtons.NEXT.buttonText)
         nextButton.setWidth(buttonWidth)
+        val addLinkButton = GuiButton(ControllerButtons.ADD_LINK.ordinal, 0, 0, ControllerButtons.ADD_LINK.buttonText)
+        addLinkButton.setWidth(fontRenderer.getStringWidth(ControllerButtons.ADD_LINK.buttonText) + 10)
+
+
 
         buttonList.add(prevButton)
         buttonList.add(nextButton)
-
+        buttonList.add(addLinkButton)
 //        tile?.factoryContents
 //            ?.filterValues { it != Types.CONTROLLER }
 //            ?.forEach {
@@ -95,22 +104,10 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         var horizontalGap = 28
         var verticalGap = 28
         var rowCount = 0
+        var flow = convertProgramToFlows(tile?.factoryProgram)
 
-        var flow = ArrayList<ArrayList<IAdvancedFactoryTile>>()
-
-        var currentFlow = ArrayList<IAdvancedFactoryTile>()
-        flow.add(currentFlow)
-
-        tile?.factoryProgram?.forEach {
-            if (currentFlow.isEmpty())
-                currentFlow.add(it.first)
-            if (currentFlow.last() != it.first) {
-                currentFlow = ArrayList()
-                flow.add(currentFlow)
-            }
-            currentFlow.add(it.second)
-        }
         assert(flow.isNotEmpty())
+
         flow[pageNo].forEach {
             var stack = Blocks.getBlockFromType(it.factoryBlockType)
             drawItemStack(ItemStack(stack), x, y, "")
@@ -131,6 +128,39 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         totalPages = flow.size
     }
 
+    private fun convertFlowsToProgram(flows: ArrayList<ArrayList<IAdvancedFactoryTile>>): ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> {
+        var program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> = ArrayList()
+
+        flows.forEach { flow ->
+            flow.indices.forEach { index ->
+                if (index != 0) {
+                    program.add(Pair(flow[index - 1], flow[index]))
+                }
+            }
+        }
+        return program
+    }
+
+    private fun convertProgramToFlows(program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>>?): ArrayList<ArrayList<IAdvancedFactoryTile>> {
+        var flow = ArrayList<ArrayList<IAdvancedFactoryTile>>()
+
+        var currentFlow = ArrayList<IAdvancedFactoryTile>()
+        flow.add(currentFlow)
+        //TODO this is missing a block....
+        program?.forEach {
+            if (currentFlow.isEmpty()) {
+                currentFlow.add(it.first)
+            }
+            if (currentFlow.last() != it.first) {
+                currentFlow = ArrayList()
+                flow.add(currentFlow)
+                currentFlow.add(it.first)
+            }
+            currentFlow.add(it.second)
+        }
+        return flow
+    }
+
     private fun drawScreenPre(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawDefaultBackground()
         GlStateManager.color(1F, 1F, 1F)
@@ -140,18 +170,14 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize)
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
-        super.mouseClicked(mouseX, mouseY, mouseButton)
-        //AdvancedFactory.logger?.log(Level.INFO, "$mouseX, $mouseY, $mouseButton")
-    }
-
     override fun actionPerformed(button: GuiButton?) {
         AdvancedFactory.logger?.log(Level.INFO, button?.id)
         if (button?.id == ControllerButtons.PREV.ordinal && pageNo > 0) {
-            pageNo --
-        }
-        if (button?.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
-            pageNo ++
+            pageNo--
+        } else if (button?.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
+            pageNo++
+        } else if (button?.id == ControllerButtons.ADD_LINK.ordinal) {
+
         }
         super.actionPerformed(button)
     }
