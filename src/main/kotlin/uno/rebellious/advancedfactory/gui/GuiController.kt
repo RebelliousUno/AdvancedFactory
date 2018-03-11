@@ -42,6 +42,76 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         makeButtonList()
     }
 
+    override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        drawScreenPre()
+        super.drawScreen(mouseX, mouseY, partialTicks)
+        drawScreenPost()
+    }
+
+    private fun drawScreenPre() {
+        drawDefaultBackground()
+        GlStateManager.color(1F, 1F, 1F)
+        val res = ResourceLocation(AdvancedFactory.MOD_ID, "textures/gui/gui_controller.png")
+
+        this.mc.textureManager.bindTexture(res)
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize)
+    }
+
+    private fun drawScreenPost() {
+        drawProgram()
+        pageText()
+        drawFactoryContents()
+        drawSelected()
+    }
+
+    private fun drawProgram() {
+        var x = guiLeft + 10
+        var y = guiTop + 10
+        val horizontalGap = 28
+        val verticalGap = 28
+        var slotCount = 1
+        var rowCount = 0
+        val flow = convertProgramToFlows(tile?.factoryProgram)
+
+        assert(flow.isNotEmpty())
+
+        flow[pageNo].forEach {
+            val stack = Blocks.getBlockFromType(it.factoryBlockType)
+            drawItemStack(ItemStack(stack), x, y, "")
+            slotCount++
+            when (slotCount) {
+                in 1..6, in 8..12, in 14..18, in 20..24 -> {
+                    if (rowCount % 2 == 0)
+                        x += horizontalGap
+                    else
+                        x -= horizontalGap
+                }
+                7, 13, 19 -> {
+                    rowCount++
+                }
+            }
+            y = guiTop + 10 + (rowCount * verticalGap)
+        }
+        totalPages = flow.size
+    }
+
+    private fun drawFactoryContents() {
+        val x = 0
+        var y = 0
+        val padding = 3
+        tile?.factoryContents?.forEach {
+            drawItemStack(ItemStack(Blocks.getBlockFromType(it.value)), x + padding, y + padding, "")
+            blockClickArea[Pair(Pair(x, y), Pair(x + 21, y + 21))] =
+                    world.getTileEntity(it.key) as? IAdvancedFactoryTile
+            y += (21)
+        } ?: return
+    }
+
+    private fun drawSelected() {
+        val selection = selectedTile ?: return
+        drawBox(selection, 0)
+    }
+
     private fun pageText() {
         val text = "Page ${pageNo + 1} of $totalPages"
         val textWidth = fontRenderer.getStringWidth(text)
@@ -78,85 +148,6 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         // buttonList.add(addLinkButton)
     }
 
-    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
-        super.mouseClicked(mouseX, mouseY, mouseButton)
-        val clickArea = blockClickArea.filter {
-            val x1 = it.key.first.first
-            val y1 = it.key.first.second
-            val x2 = it.key.second.first
-            val y2 = it.key.second.second
-            mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2
-        }.asSequence().firstOrNull()
-        if (clickArea != null) {
-            selectedTile = if (selectedTile == clickArea.key)
-                null
-            else
-                clickArea.key
-            GuiButton(-1, 0, 0, "").playPressSound(mc.soundHandler)
-        }
-    }
-
-    override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        drawScreenPre(mouseX, mouseY, partialTicks)
-        super.drawScreen(mouseX, mouseY, partialTicks)
-        drawScreenPost(mouseX, mouseY, partialTicks)
-    }
-
-    private fun drawScreenPost(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        drawProgram()
-        pageText()
-        drawFactoryContents()
-        drawSelected()
-    }
-
-    private fun drawSelected() {
-        val selection = selectedTile ?: return
-        drawBox(selection, 0)
-    }
-
-    private fun drawFactoryContents() {
-        val x = 0
-        var y = 0
-        val padding = 3
-        tile?.factoryContents?.forEach {
-            drawItemStack(ItemStack(Blocks.getBlockFromType(it.value)), x + padding, y + padding, "")
-            blockClickArea[Pair(Pair(x, y), Pair(x + 21, y + 21))] =
-                    world.getTileEntity(it.key) as? IAdvancedFactoryTile
-            y += (21)
-        } ?: return
-    }
-
-    private fun drawProgram() {
-        var x = guiLeft + 10
-        var y = guiTop + 10
-        val horizontalGap = 28
-        val verticalGap = 28
-        var slotCount = 1
-        var rowCount = 0
-        val flow = convertProgramToFlows(tile?.factoryProgram)
-
-        assert(flow.isNotEmpty())
-
-        flow[pageNo].forEach {
-            val stack = Blocks.getBlockFromType(it.factoryBlockType)
-            drawItemStack(ItemStack(stack), x, y, "")
-            slotCount++
-            when (slotCount) {
-                in 1..6, in 8..12, in 14..18, in 20..24 -> {
-                    if (rowCount % 2 == 0)
-                        x += horizontalGap
-                    else
-                        x -= horizontalGap
-                }
-                7, 13, 19 -> {
-                    rowCount++
-                }
-            }
-            y = guiTop + 10 + (rowCount * verticalGap)
-        }
-        totalPages = flow.size
-    }
-
     private fun convertFlowsToProgram(flows: ArrayList<ArrayList<IAdvancedFactoryTile>>): ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> {
         val program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> = ArrayList()
 
@@ -190,20 +181,29 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         return flow
     }
 
-    private fun drawScreenPre(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        drawDefaultBackground()
-        GlStateManager.color(1F, 1F, 1F)
-        val res = ResourceLocation(AdvancedFactory.MOD_ID, "textures/gui/gui_controller.png")
-
-        this.mc.textureManager.bindTexture(res)
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize)
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+        super.mouseClicked(mouseX, mouseY, mouseButton)
+        val clickArea = blockClickArea.filter {
+            val x1 = it.key.first.first
+            val y1 = it.key.first.second
+            val x2 = it.key.second.first
+            val y2 = it.key.second.second
+            mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2
+        }.asSequence().firstOrNull()
+        if (clickArea != null) {
+            selectedTile = if (selectedTile == clickArea.key)
+                null
+            else
+                clickArea.key
+            GuiButton(-1, 0, 0, "").playPressSound(mc.soundHandler)
+        }
     }
 
-    override fun actionPerformed(button: GuiButton?) {
-        AdvancedFactory.logger?.log(Level.INFO, button?.id)
-        if (button?.id == ControllerButtons.PREV.ordinal && pageNo > 0) {
+    override fun actionPerformed(button: GuiButton) {
+        AdvancedFactory.logger?.log(Level.INFO, button.id)
+        if (button.id == ControllerButtons.PREV.ordinal && pageNo > 0) {
             pageNo--
-        } else if (button?.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
+        } else if (button.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
             pageNo++
         } /*else if (button?.id == ControllerButtons.ADD_LINK.ordinal) {
             if (tile != null) {
