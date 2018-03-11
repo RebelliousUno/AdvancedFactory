@@ -23,19 +23,19 @@ open class GuiBase : GuiScreen() {
         this.itemRender.zLevel = 0.0f
     }
 
-    fun drawBox(area: Pair<Pair<Int,Int>, Pair<Int,Int>>, color: Int) {
+    fun drawBox(area: Pair<Pair<Int, Int>, Pair<Int, Int>>, color: Int) {
         drawBox(area.first, area.second, color)
     }
 
-    fun drawBox(first: Pair<Int, Int>, second: Pair<Int, Int>, color: Int){
+    fun drawBox(first: Pair<Int, Int>, second: Pair<Int, Int>, color: Int) {
         drawBox(first.first, first.second, second.first, second.second, color)
     }
 
     fun drawBox(x1: Int, y1: Int, x2: Int, y2: Int, color: Int) {
         drawHorizontalLine(x1, x2, y1, color)
         drawHorizontalLine(x1, x2, y2, color)
-        drawVerticalLine(x1,y1,y2, color)
-        drawVerticalLine(x2,y1,y2, color)
+        drawVerticalLine(x1, y1, y2, color)
+        drawVerticalLine(x2, y1, y2, color)
     }
 }
 
