@@ -30,6 +30,10 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
     private var pageNo = 0
     private var totalPages = 0
 
+    private var blockClickArea = HashMap<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>()
+    private var selectedTile: Pair<Pair<Int, Int>, Pair<Int, Int>>? = null
+
+
     override fun initGui() {
         AdvancedFactory.logger?.log(Level.INFO, "initGUI")
         super.initGui()
@@ -74,25 +78,21 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         // buttonList.add(addLinkButton)
     }
 
-    private var selectedTile: Pair<Pair<Int, Int>, Pair<Int, Int>>? = null
-
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
-        var clickArea = blockClickArea.filter {
-            var x1 = it.key.first.first
-            var y1 = it.key.first.second
-            var x2 = it.key.second.first
-            var y2 = it.key.second.second
+        val clickArea = blockClickArea.filter {
+            val x1 = it.key.first.first
+            val y1 = it.key.first.second
+            val x2 = it.key.second.first
+            val y2 = it.key.second.second
             mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2
         }.asSequence().firstOrNull()
         if (clickArea != null) {
-            AdvancedFactory.logger?.log(Level.INFO, "Clicked ${clickArea.key}")
-            if (selectedTile == clickArea.key)
-                selectedTile = null
+            selectedTile = if (selectedTile == clickArea.key)
+                null
             else
-                selectedTile = clickArea.key
+                clickArea.key
             GuiButton(-1, 0, 0, "").playPressSound(mc.soundHandler)
-
         }
     }
 
@@ -114,12 +114,10 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         drawBox(selection, 0)
     }
 
-    private var blockClickArea = HashMap<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>()
-
     private fun drawFactoryContents() {
-        var x = 0
+        val x = 0
         var y = 0
-        var padding = 3
+        val padding = 3
         tile?.factoryContents?.forEach {
             drawItemStack(ItemStack(Blocks.getBlockFromType(it.value)), x + padding, y + padding, "")
             blockClickArea[Pair(Pair(x, y), Pair(x + 21, y + 21))] =
