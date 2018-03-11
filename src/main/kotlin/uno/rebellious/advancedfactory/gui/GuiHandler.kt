@@ -9,10 +9,10 @@ import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityController
 
 class GuiHandler : IGuiHandler {
-    override fun getClientGuiElement(ID: Int, player: EntityPlayer?, world: World?, x: Int, y: Int, z: Int): Any? {
+    override fun getClientGuiElement(ID: Int, player: EntityPlayer?, world: World, x: Int, y: Int, z: Int): Any? {
         AdvancedFactory.logger?.log(Level.INFO, "getClientGuiElement")
-        var tile = world?.getTileEntity(BlockPos(x, y, z)) as? TileEntityController
-        return GuiController(tile)
+        var tile = world.getTileEntity(BlockPos(x, y, z)) as? TileEntityController
+        return GuiController(tile, world)
     }
 
     override fun getServerGuiElement(ID: Int, player: EntityPlayer?, world: World?, x: Int, y: Int, z: Int): Any? {

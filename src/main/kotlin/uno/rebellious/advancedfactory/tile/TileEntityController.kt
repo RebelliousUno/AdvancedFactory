@@ -18,7 +18,7 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
 
     override fun update() {
         this.checkNeighbours()
-        makeBasicProgram()
+        //makeBasicProgram()
         //executeProgram()
     }
 
