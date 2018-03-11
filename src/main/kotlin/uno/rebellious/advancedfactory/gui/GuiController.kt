@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
+import net.minecraft.world.World
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
@@ -13,7 +14,7 @@ import uno.rebellious.advancedfactory.util.Types
 import java.lang.Math.max
 
 
-class GuiController(val tile: TileEntityController?) : GuiBase() {
+class GuiController(val tile: TileEntityController?, val world: World) : GuiBase() {
     private enum class ControllerButtons(val buttonText: String) {
         NEXT("Next"), PREV("Prev"), ADD_LINK("Add Link")
     }
@@ -68,22 +69,31 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
         val addLinkButton = GuiButton(ControllerButtons.ADD_LINK.ordinal, 0, 0, ControllerButtons.ADD_LINK.buttonText)
         addLinkButton.setWidth(fontRenderer.getStringWidth(ControllerButtons.ADD_LINK.buttonText) + 10)
 
-
-
         buttonList.add(prevButton)
         buttonList.add(nextButton)
-        buttonList.add(addLinkButton)
-//        tile?.factoryContents
-//            ?.filterValues { it != Types.CONTROLLER }
-//            ?.forEach {
-//                var name = it.value.unlocalizedName
-//                var width = fontRenderer.getStringWidth(name) + 10
-//                buttonList.add(GuiButton(i, guiLeft, i * 20, width, height, name))
-//                var t = Triple(it.value, guiLeft + width, i * 20)
-//                blockList.add(t)
-//                drawItemStack(ItemStack(Blocks.controller), guiLeft + width, i * 20, "")
-//                i++
-//            }
+        // buttonList.add(addLinkButton)
+    }
+
+    private var selectedTile: Pair<Pair<Int, Int>, Pair<Int, Int>>? = null
+
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+        super.mouseClicked(mouseX, mouseY, mouseButton)
+        var clickArea = blockClickArea.filter {
+            var x1 = it.key.first.first
+            var y1 = it.key.first.second
+            var x2 = it.key.second.first
+            var y2 = it.key.second.second
+            mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2
+        }.asSequence().firstOrNull()
+        if (clickArea != null) {
+            AdvancedFactory.logger?.log(Level.INFO, "Clicked ${clickArea.key}")
+            if (selectedTile == clickArea.key)
+                selectedTile = null
+            else
+                selectedTile = clickArea.key
+            GuiButton(-1, 0, 0, "").playPressSound(mc.soundHandler)
+
+        }
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -95,21 +105,42 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     private fun drawScreenPost(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawProgram()
         pageText()
+        drawFactoryContents()
+        drawSelected()
+    }
+
+    private fun drawSelected() {
+        val selection = selectedTile ?: return
+        drawBox(selection, 0)
+    }
+
+    private var blockClickArea = HashMap<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>()
+
+    private fun drawFactoryContents() {
+        var x = 0
+        var y = 0
+        var padding = 3
+        tile?.factoryContents?.forEach {
+            drawItemStack(ItemStack(Blocks.getBlockFromType(it.value)), x + padding, y + padding, "")
+            blockClickArea[Pair(Pair(x, y), Pair(x + 21, y + 21))] =
+                    world.getTileEntity(it.key) as? IAdvancedFactoryTile
+            y += (21)
+        } ?: return
     }
 
     private fun drawProgram() {
         var x = guiLeft + 10
         var y = guiTop + 10
+        val horizontalGap = 28
+        val verticalGap = 28
         var slotCount = 1
-        var horizontalGap = 28
-        var verticalGap = 28
         var rowCount = 0
-        var flow = convertProgramToFlows(tile?.factoryProgram)
+        val flow = convertProgramToFlows(tile?.factoryProgram)
 
         assert(flow.isNotEmpty())
 
         flow[pageNo].forEach {
-            var stack = Blocks.getBlockFromType(it.factoryBlockType)
+            val stack = Blocks.getBlockFromType(it.factoryBlockType)
             drawItemStack(ItemStack(stack), x, y, "")
             slotCount++
             when (slotCount) {
@@ -129,7 +160,7 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     }
 
     private fun convertFlowsToProgram(flows: ArrayList<ArrayList<IAdvancedFactoryTile>>): ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> {
-        var program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> = ArrayList()
+        val program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> = ArrayList()
 
         flows.forEach { flow ->
             flow.indices.forEach { index ->
@@ -142,11 +173,11 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     }
 
     private fun convertProgramToFlows(program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>>?): ArrayList<ArrayList<IAdvancedFactoryTile>> {
-        var flow = ArrayList<ArrayList<IAdvancedFactoryTile>>()
+        val flow = ArrayList<ArrayList<IAdvancedFactoryTile>>()
 
         var currentFlow = ArrayList<IAdvancedFactoryTile>()
         flow.add(currentFlow)
-        //TODO this is missing a block....
+
         program?.forEach {
             if (currentFlow.isEmpty()) {
                 currentFlow.add(it.first)
@@ -164,7 +195,7 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
     private fun drawScreenPre(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawDefaultBackground()
         GlStateManager.color(1F, 1F, 1F)
-        var res = ResourceLocation(AdvancedFactory.MOD_ID, "textures/gui/gui_controller.png")
+        val res = ResourceLocation(AdvancedFactory.MOD_ID, "textures/gui/gui_controller.png")
 
         this.mc.textureManager.bindTexture(res)
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize)
@@ -176,9 +207,17 @@ class GuiController(val tile: TileEntityController?) : GuiBase() {
             pageNo--
         } else if (button?.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
             pageNo++
-        } else if (button?.id == ControllerButtons.ADD_LINK.ordinal) {
-
-        }
+        } /*else if (button?.id == ControllerButtons.ADD_LINK.ordinal) {
+            if (tile != null) {
+                val contents = tile.factoryContents
+                    .filter { it.value != Types.CONTROLLER }
+                    .map { world.getTileEntity(it.key) as? IAdvancedFactoryTile }
+                if (contents.size >= 2) {
+                    if (contents[0] != null && contents[1] != null)
+                        tile.factoryProgram.add(Pair(contents[0]!!, contents[1]!!))
+                }
+            }
+        }*/
         super.actionPerformed(button)
     }
 }
