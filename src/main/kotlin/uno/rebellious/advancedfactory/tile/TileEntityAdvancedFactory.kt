@@ -5,7 +5,7 @@ import net.minecraft.util.math.BlockPos
 import uno.rebellious.advancedfactory.util.Types
 
 abstract class TileEntityAdvancedFactory : TileEntity(), IAdvancedFactoryTile {
-    abstract var controllerTile: TileEntityController?
+    abstract var controllerTile: BlockPos?
 
     fun checkNeighbours(
         multiblockContents: HashMap<BlockPos, Types>,
@@ -25,11 +25,11 @@ abstract class TileEntityAdvancedFactory : TileEntity(), IAdvancedFactoryTile {
                     mysteryTile is TileEntityAdvancedFactory &&
                             (mysteryTile.controllerTile == null) -> {
                         multiblockContents[it] = mysteryTile.factoryBlockType
-                        mysteryTile.controllerTile = controller
+                        mysteryTile.controllerTile = controller.pos
                         mysteryTile.checkNeighbours(multiblockContents, controller, checkedList)
                     }
                     mysteryTile is TileEntityAdvancedFactory -> {
-                        if (mysteryTile.controllerTile != controller)
+                        if (mysteryTile.controllerTile != controller.pos)
                             multiblockContents.remove(it)
                         else {// otherwise is already part of our multiblock, so make sure it's in our list
                             // and check its neighbours

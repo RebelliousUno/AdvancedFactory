@@ -7,23 +7,21 @@ import net.minecraft.util.math.BlockPos
 import uno.rebellious.advancedfactory.block.BlockController
 
 abstract class TileEntityHatch : TileEntityAdvancedFactory(), ITickable {
-    private var _controller: TileEntityController? = null
-    private var controllerTilePos: BlockPos? = null
+    private var _controller: BlockPos? = null
     override var itemInventory = NonNullList.withSize(2, ItemStack.EMPTY)
 
 
-    override var controllerTile: TileEntityController?
+    override var controllerTile: BlockPos?
         get() = this._controller
         set(value) {
             this._controller = value
-            this.controllerTilePos = value?.pos
         }
 
     override fun update() {
         //Check if still has a valid controller
         //If not then remove it
-        if (controllerTile != null && controllerTilePos != null) {
-            val block = this.world.getBlockState(controllerTilePos!!).block
+        if (controllerTile != null) {
+            val block = this.world.getBlockState(controllerTile!!).block
             if (block !is BlockController) controllerTile = null
         }
     }

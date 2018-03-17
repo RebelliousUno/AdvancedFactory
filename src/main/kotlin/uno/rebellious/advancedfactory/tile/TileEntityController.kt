@@ -2,14 +2,11 @@ package uno.rebellious.advancedfactory.tile
 
 
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.ITickable
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
-import uno.rebellious.advancedfactory.networking.FactoryProgramMessage
-import uno.rebellious.advancedfactory.networking.NetworkHandler
 import uno.rebellious.advancedfactory.util.Types
 
 class TileEntityController : TileEntityAdvancedFactory(), ITickable {
@@ -48,32 +45,41 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
 //    }
 
     private fun executeProgram() {
-        factoryProgram.forEach {
-            //Check first has a stack
-            var firstTile = world.getTileEntity(it.first) as IAdvancedFactoryTile
-            var secondTile = world.getTileEntity(it.second) as IAdvancedFactoryTile
+        factoryProgram
+            .map {
+                Pair(
+                    world.getTileEntity(it.first) as? IAdvancedFactoryTile,
+                    world.getTileEntity(it.second) as? IAdvancedFactoryTile
+                )
+            }
+            .forEach {
+                //Check first has a stack
+                var firstTile = it.first
+                var secondTile = it.second
+                if (firstTile != null && secondTile != null) {
+                    if (!firstTile.outputStack.isEmpty) {
+                        //Check second is empty
+                        if (secondTile.inputStack.isEmpty) {
+                            secondTile.inputStack = firstTile.itemInventory[1].copy()
+                            firstTile.outputStack = ItemStack.EMPTY
+                        } else if (secondTile.inputStack.item == firstTile.outputStack.item) {
+                            // same item check if space
+                            val inputSpace = secondTile.inputStack.maxStackSize - secondTile.inputStack.count
+                            val outputSize = firstTile.outputStack.count
 
-            if (!firstTile.outputStack.isEmpty) {
-                //Check second is empty
-                if (secondTile.inputStack.isEmpty) {
-                    secondTile.inputStack = firstTile.itemInventory[1].copy()
-                    firstTile.outputStack = ItemStack.EMPTY
-                } else if (secondTile.inputStack.item == firstTile.outputStack.item) {
-                    // same item check if space
-                    val inputSpace = secondTile.inputStack.maxStackSize - secondTile.inputStack.count
-                    val outputSize = firstTile.outputStack.count
-
-                    if (inputSpace >= outputSize) {
-                        secondTile.inputStack.grow(outputSize)
-                        firstTile.outputStack = ItemStack.EMPTY
-                    } else {
-                        secondTile.inputStack.grow(inputSpace)
-                        firstTile.outputStack.shrink(inputSpace)
+                            if (inputSpace >= outputSize) {
+                                secondTile.inputStack.grow(outputSize)
+                                firstTile.outputStack = ItemStack.EMPTY
+                            } else {
+                                secondTile.inputStack.grow(inputSpace)
+                                firstTile.outputStack.shrink(inputSpace)
+                            }
+                        }
                     }
                 }
             }
-        }
     }
+
 
     private fun makeBasicProgram() {
         // set up a basic test program
@@ -122,7 +128,7 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
                 if (mysteryTile is TileEntityAdvancedFactory) mysteryTile.controllerTile = null
             }
             factoryContents.clear()
-            controllerTile = this
+            controllerTile = this.pos
         }
         var checkedList = HashSet<BlockPos>()
         checkedList.add(pos)
@@ -130,8 +136,8 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
         checkNeighbours(factoryContents, this, checkedList)
     }
 
-    override var controllerTile: TileEntityController?
-        get() = this
+    override var controllerTile: BlockPos?
+        get() = this.pos
         set(value) {}
 
     fun listBlocks() {
