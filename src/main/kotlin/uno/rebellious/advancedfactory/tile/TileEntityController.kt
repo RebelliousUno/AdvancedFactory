@@ -2,11 +2,14 @@ package uno.rebellious.advancedfactory.tile
 
 
 import net.minecraft.item.ItemStack
+import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.ITickable
 import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
+import uno.rebellious.advancedfactory.networking.FactoryProgramMessage
+import uno.rebellious.advancedfactory.networking.NetworkHandler
 import uno.rebellious.advancedfactory.util.Types
 
 class TileEntityController : TileEntityAdvancedFactory(), ITickable {
@@ -19,32 +22,53 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
     override fun update() {
         this.checkNeighbours()
         //makeBasicProgram()
-        //executeProgram()
+        executeProgram()
     }
 
     val factoryContents = HashMap<BlockPos, Types>()
-    val factoryProgram = ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>>()
+    val factoryProgram = ArrayList<Pair<BlockPos, BlockPos>>()
 
+
+    fun updateFactoryProgram(program: ArrayList<Pair<BlockPos, BlockPos>>) {
+        factoryProgram.clear()
+        factoryProgram.addAll(program)
+        if (!world.isRemote) {
+            //NetworkHandler.INSTANCE.sendToServer(FactoryProgramMessage(factoryProgram))
+        }
+    }
+
+//    override fun readFromNBT(compound: NBTTagCompound) {
+//        super.readFromNBT(compound)
+//    }
+//
+//    override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
+//        var tagCompound = NBTTagCompound()
+//        //tagCompound.setTag("inventory", itemInventory)
+//        return super.writeToNBT(compound)
+//    }
 
     private fun executeProgram() {
         factoryProgram.forEach {
             //Check first has a stack
-            if (!it.first.outputStack.isEmpty) {
+            var firstTile = world.getTileEntity(it.first) as IAdvancedFactoryTile
+            var secondTile = world.getTileEntity(it.second) as IAdvancedFactoryTile
+
+            if (!firstTile.outputStack.isEmpty) {
                 //Check second is empty
-                if (it.second.inputStack.isEmpty) {
-                    it.second.inputStack = it.first.itemInventory[1].copy()
-                    it.first.outputStack = ItemStack.EMPTY
-                } else if (it.second.inputStack.item == it.first.outputStack.item) {
+                if (secondTile.inputStack.isEmpty) {
+                    secondTile.inputStack = firstTile.itemInventory[1].copy()
+                    firstTile.outputStack = ItemStack.EMPTY
+                } else if (secondTile.inputStack.item == firstTile.outputStack.item) {
                     // same item check if space
-                    val inputSpace = it.second.inputStack.maxStackSize - it.second.inputStack.count
-                    val outputSize = it.first.outputStack.count
+                    val inputSpace = secondTile.inputStack.maxStackSize - secondTile.inputStack.count
+                    val outputSize = firstTile.outputStack.count
 
                     if (inputSpace >= outputSize) {
-                        it.second.inputStack.grow(outputSize)
-                        it.first.outputStack = ItemStack.EMPTY
+                        secondTile.inputStack.grow(outputSize)
+                        firstTile.outputStack = ItemStack.EMPTY
                     } else {
-                        it.second.inputStack.grow(inputSpace)
-                        it.first.outputStack.shrink(inputSpace)
+                        secondTile.inputStack.grow(inputSpace)
+                        firstTile.outputStack.shrink(inputSpace)
                     }
                 }
             }
@@ -72,21 +96,21 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
             if (it.value == Types.CRUSHER) aCrusher = world.getTileEntity(it.key) as TileEntityCrusher
         }
         if (anInputHatch != null && anOutputHatch != null && aSmelter != null && aCrusher != null) {
-            factoryProgram += Pair(anInputHatch!!, aCrusher!!)
-            factoryProgram += Pair(aCrusher!!, aSmelter!!)
-            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
-            factoryProgram += Pair(anOutputHatch!!, anInputHatch!!)
+            factoryProgram += Pair(anInputHatch!!.pos, aCrusher!!.pos)
+            factoryProgram += Pair(aCrusher!!.pos, aSmelter!!.pos)
+            factoryProgram += Pair(aSmelter!!.pos, anOutputHatch!!.pos)
+            factoryProgram += Pair(anOutputHatch!!.pos, anInputHatch!!.pos)
             //factoryProgram += Pair(anInputHatch!!, aCrusher!!)
-            factoryProgram += Pair(aCrusher!!, aSmelter!!)
-            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
-            factoryProgram += Pair(anOutputHatch!!, anInputHatch!!)
-            factoryProgram += Pair(anInputHatch!!, aCrusher!!)
+            factoryProgram += Pair(aCrusher!!.pos, aSmelter!!.pos)
+            factoryProgram += Pair(aSmelter!!.pos, anOutputHatch!!.pos)
+            factoryProgram += Pair(anOutputHatch!!.pos, anInputHatch!!.pos)
+            factoryProgram += Pair(anInputHatch!!.pos, aCrusher!!.pos)
             //factoryProgram += Pair(aCrusher!!, aSmelter!!)
-            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
-            factoryProgram += Pair(anOutputHatch!!, anInputHatch!!)
-            factoryProgram += Pair(anInputHatch!!, aCrusher!!)
-            factoryProgram += Pair(aCrusher!!, aSmelter!!)
-            factoryProgram += Pair(aSmelter!!, anOutputHatch!!)
+            factoryProgram += Pair(aSmelter!!.pos, anOutputHatch!!.pos)
+            factoryProgram += Pair(anOutputHatch!!.pos, anInputHatch!!.pos)
+            factoryProgram += Pair(anInputHatch!!.pos, aCrusher!!.pos)
+            factoryProgram += Pair(aCrusher!!.pos, aSmelter!!.pos)
+            factoryProgram += Pair(aSmelter!!.pos, anOutputHatch!!.pos)
         }
         //AdvancedFactory.logger?.log(Level.INFO, factoryProgram)
     }
@@ -111,8 +135,7 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
         set(value) {}
 
     fun listBlocks() {
-        AdvancedFactory.logger?.log(Level.INFO, factoryContents)
-
+        AdvancedFactory.logger?.log(Level.INFO, factoryProgram)
 
     }
 }
