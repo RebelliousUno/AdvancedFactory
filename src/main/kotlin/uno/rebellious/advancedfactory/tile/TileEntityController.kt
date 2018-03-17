@@ -7,7 +7,12 @@ import net.minecraft.util.NonNullList
 import net.minecraft.util.math.BlockPos
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
+import uno.rebellious.advancedfactory.networking.FactoryContentsMessage
+import uno.rebellious.advancedfactory.networking.FactoryProgramMessage
+import uno.rebellious.advancedfactory.networking.NetworkHandler
 import uno.rebellious.advancedfactory.util.Types
+import uno.rebellious.advancedfactory.util.isClient
+import uno.rebellious.advancedfactory.util.isServer
 
 class TileEntityController : TileEntityAdvancedFactory(), ITickable {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(2, ItemStack.EMPTY)
@@ -29,20 +34,11 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
     fun updateFactoryProgram(program: ArrayList<Pair<BlockPos, BlockPos>>) {
         factoryProgram.clear()
         factoryProgram.addAll(program)
-        if (!world.isRemote) {
-            //NetworkHandler.INSTANCE.sendToServer(FactoryProgramMessage(factoryProgram))
+        if (world.isClient) {
+            NetworkHandler.INSTANCE.sendToServer(FactoryProgramMessage(this.pos, factoryProgram))
+            //NetworkHandler.INSTANCE.sendToServer(FactoryContentsMessage(factoryContents))
         }
     }
-
-//    override fun readFromNBT(compound: NBTTagCompound) {
-//        super.readFromNBT(compound)
-//    }
-//
-//    override fun writeToNBT(compound: NBTTagCompound): NBTTagCompound {
-//        var tagCompound = NBTTagCompound()
-//        //tagCompound.setTag("inventory", itemInventory)
-//        return super.writeToNBT(compound)
-//    }
 
     private fun executeProgram() {
         factoryProgram
@@ -134,6 +130,13 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
         checkedList.add(pos)
         factoryContents[pos] = factoryBlockType
         checkNeighbours(factoryContents, this, checkedList)
+        if (recheckMultiblock)
+            if (world.isServer) {
+                AdvancedFactory.logger?.info("Sending Message to Client")
+                NetworkHandler.INSTANCE.sendToAll(FactoryContentsMessage(this.pos))
+            } else {
+                AdvancedFactory.logger?.info("Sending Message to Server")
+            }
     }
 
     override var controllerTile: BlockPos?
@@ -145,6 +148,7 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
 
     }
 }
+
 
 
 

@@ -36,7 +36,6 @@ abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
         }
     }
 
-    // TODO: Fix this again...something broken here again
     override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
         var tile = worldIn.getTileEntity(pos)
         if (tile is TileEntityAdvancedFactory && tile.controllerTile != null) {
