@@ -1,5 +1,7 @@
 package uno.rebellious.advancedfactory.gui
 
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.item.ItemStack
@@ -18,7 +20,8 @@ import java.lang.Math.max
 
 class GuiController(val tile: TileEntityController?, val world: World) : GuiBase() {
     private enum class ControllerButtons(val buttonText: String) {
-        NEXT("Next"), PREV("Prev"), ADD_LINK("Add Link")
+        NEXT("Next"), PREV("Prev"), ADD_LINK("Add Link"), NEW_FLOW("New Flow");
+        val width = Minecraft.getMinecraft().fontRenderer.getStringWidth(buttonText)
     }
 
     private var xSize: Int = 176
@@ -128,10 +131,7 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         val buttonHeight = 20
         val padding = 5
         val buttonBottom = guiTop + ySize - buttonHeight - padding
-        val buttonWidth = 10 + max(
-            fontRenderer.getStringWidth(ControllerButtons.NEXT.buttonText),
-            fontRenderer.getStringWidth(ControllerButtons.PREV.buttonText)
-        )
+        val buttonWidth = 10 + max(ControllerButtons.NEXT.width, ControllerButtons.PREV.width)
 
         val leftButtonX = guiLeft + padding
         val rightButtonX = guiLeft + xSize - buttonWidth - padding
@@ -143,11 +143,14 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
             GuiButton(ControllerButtons.NEXT.ordinal, rightButtonX, buttonBottom, ControllerButtons.NEXT.buttonText)
         nextButton.setWidth(buttonWidth)
         val addLinkButton = GuiButton(ControllerButtons.ADD_LINK.ordinal, 50, 0, ControllerButtons.ADD_LINK.buttonText)
-        addLinkButton.setWidth(fontRenderer.getStringWidth(ControllerButtons.ADD_LINK.buttonText) + 10)
+        addLinkButton.setWidth(ControllerButtons.ADD_LINK.width + 10)
 
+        val newFlowButton = GuiButton(ControllerButtons.NEW_FLOW.ordinal, 50, 20, ControllerButtons.NEW_FLOW.buttonText)
+        newFlowButton.setWidth(ControllerButtons.NEW_FLOW.width + 10)
         buttonList.add(prevButton)
         buttonList.add(nextButton)
         buttonList.add(addLinkButton)
+        buttonList.add(newFlowButton)
     }
 
     private fun convertFlowsToProgram(flows: ArrayList<ArrayList<IAdvancedFactoryTile>>): ArrayList<Pair<BlockPos, BlockPos>> {
@@ -223,31 +226,34 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         } else if (button.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
             pageNo++
         } else if (button?.id == ControllerButtons.ADD_LINK.ordinal) {
-
-            val selectionToAdd = selectedTile?.value
-            val firstSelection = tempSelection?.value
-            if (selectionToAdd != null) {
-                val flows = convertProgramToFlows(tile?.factoryProgram)
-                val currentFlow = flows[pageNo]
-                AdvancedFactory.logger?.log(Level.INFO, currentFlow)
-                AdvancedFactory.logger?.info("$selectionToAdd $firstSelection")
-                // Tile is selected
-                if (currentFlow.isEmpty()) {
-                    if (firstSelection != null) {
-                        currentFlow.add(firstSelection)
-                        currentFlow.add(selectionToAdd)
-                        tempSelection = null
-                    } else {
-                        tempSelection = selectedTile
-                    }
-                } else {
-                    currentFlow.add(selectionToAdd)
-                }
-                selectedTile = null
-                tile?.updateFactoryProgram(convertFlowsToProgram(flows))
-            }
+            addLinkAction()
         }
         super.actionPerformed(button)
+    }
+
+    private fun addLinkAction() {
+        val selectionToAdd = selectedTile?.value
+        val firstSelection = tempSelection?.value
+        if (selectionToAdd != null) {
+            val flows = convertProgramToFlows(tile?.factoryProgram)
+            val currentFlow = flows[pageNo]
+            AdvancedFactory.logger?.log(Level.INFO, currentFlow)
+            AdvancedFactory.logger?.info("$selectionToAdd $firstSelection")
+            // Tile is selected
+            if (currentFlow.isEmpty()) {
+                if (firstSelection != null) {
+                    currentFlow.add(firstSelection)
+                    currentFlow.add(selectionToAdd)
+                    tempSelection = null
+                } else {
+                    tempSelection = selectedTile
+                }
+            } else {
+                currentFlow.add(selectionToAdd)
+            }
+            selectedTile = null
+            tile?.updateFactoryProgram(convertFlowsToProgram(flows))
+        }
     }
 }
 
