@@ -19,13 +19,11 @@ class TileEntityOutputHatch : TileEntityHatch(), ICapabilityProvider {
         moveItemsFromInputToOutput()
     }
 
-    private var _controller: TileEntityController? = null
-    private var controllerTilePos: BlockPos? = null
-    override var controllerTile: TileEntityController?
+    private var _controller: BlockPos? = null
+    override var controllerTile: BlockPos?
         get() = this._controller
         set(value) {
             this._controller = value
-            this.controllerTilePos = value?.pos
         }
 
     override fun hasCapability(capability: Capability<*>, facing: EnumFacing?): Boolean {

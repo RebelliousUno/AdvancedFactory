@@ -31,18 +31,20 @@ abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
         val tileEntity = worldIn.getTileEntity(pos)
         return when (tileEntity) {
             is TileEntityController -> tileEntity
-            is TileEntityAdvancedFactory -> tileEntity.controllerTile
+            is TileEntityAdvancedFactory -> worldIn.getTileEntity(tileEntity.controllerTile) as? TileEntityController
             else -> null
         }
     }
 
     override fun breakBlock(worldIn: World, pos: BlockPos, state: IBlockState) {
         var tile = worldIn.getTileEntity(pos)
-        if (tile is TileEntityAdvancedFactory) {
-            var controller = tile.controllerTile
-            super.breakBlock(worldIn, pos, state)
-            controller?.checkNeighbours(true)
-            return
+        if (tile is TileEntityAdvancedFactory && tile.controllerTile != null) {
+            var controller = worldIn.getTileEntity(tile.controllerTile!!)
+            if (controller is TileEntityController) {
+                super.breakBlock(worldIn, pos, state)
+                controller.checkNeighbours(true)
+                return
+            }
         }
         super.breakBlock(worldIn, pos, state)
     }

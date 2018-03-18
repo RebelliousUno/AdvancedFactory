@@ -19,14 +19,12 @@ class TileEntitySmelter : TileEntityAdvancedFactory(), ITickable {
 
     private var currentCookingTime = 0
 
-    private var _controller: TileEntityController? = null
-    private var controllerTilePos: BlockPos? = null
+    private var _controller: BlockPos? = null
 
-    override var controllerTile: TileEntityController?
+    override var controllerTile: BlockPos?
         get() = this._controller
         set(value) {
             this._controller = value
-            this.controllerTilePos = value?.pos
         }
 
     override val factoryBlockType = Types.SMELTER

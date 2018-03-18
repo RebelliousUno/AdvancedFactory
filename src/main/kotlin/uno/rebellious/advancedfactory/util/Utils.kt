@@ -1,6 +1,7 @@
 package uno.rebellious.advancedfactory.util
 
 import net.minecraft.item.ItemStack
+import net.minecraft.world.World
 
 enum class Types(val unlocalizedName: kotlin.String) {
     INPUT_HATCH("Input Hatch"),
@@ -15,3 +16,15 @@ object Helpers {
         return stack.maxStackSize - stack.count
     }
 }
+
+/*Extensions */
+
+val World.isClient: Boolean
+    get() {
+        return this.isRemote
+    }
+
+val World.isServer: Boolean
+    get() {
+        return !this.isRemote
+    }

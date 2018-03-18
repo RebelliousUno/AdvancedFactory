@@ -1,14 +1,18 @@
 package uno.rebellious.advancedfactory.gui
 
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.block.Blocks
 import uno.rebellious.advancedfactory.tile.IAdvancedFactoryTile
+import uno.rebellious.advancedfactory.tile.TileEntityAdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityController
 import uno.rebellious.advancedfactory.util.Types
 import java.lang.Math.max
@@ -16,7 +20,8 @@ import java.lang.Math.max
 
 class GuiController(val tile: TileEntityController?, val world: World) : GuiBase() {
     private enum class ControllerButtons(val buttonText: String) {
-        NEXT("Next"), PREV("Prev"), ADD_LINK("Add Link")
+        NEXT("Next"), PREV("Prev"), ADD_LINK("Add Link"), NEW_FLOW("New Flow");
+        val width = Minecraft.getMinecraft().fontRenderer.getStringWidth(buttonText)
     }
 
     private var xSize: Int = 176
@@ -31,8 +36,8 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
     private var totalPages = 0
 
     private var blockClickArea = HashMap<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>()
-    private var selectedTile: Pair<Pair<Int, Int>, Pair<Int, Int>>? = null
-
+    private var selectedTile: Map.Entry<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>? = null
+    private var tempSelection: Map.Entry<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>? = null
 
     override fun initGui() {
         AdvancedFactory.logger?.log(Level.INFO, "initGUI")
@@ -109,7 +114,7 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
 
     private fun drawSelected() {
         val selection = selectedTile ?: return
-        drawBox(selection, 0)
+        drawBox(selection.key, 0)
     }
 
     private fun pageText() {
@@ -126,10 +131,7 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         val buttonHeight = 20
         val padding = 5
         val buttonBottom = guiTop + ySize - buttonHeight - padding
-        val buttonWidth = 10 + max(
-            fontRenderer.getStringWidth(ControllerButtons.NEXT.buttonText),
-            fontRenderer.getStringWidth(ControllerButtons.PREV.buttonText)
-        )
+        val buttonWidth = 10 + max(ControllerButtons.NEXT.width, ControllerButtons.PREV.width)
 
         val leftButtonX = guiLeft + padding
         val rightButtonX = guiLeft + xSize - buttonWidth - padding
@@ -140,43 +142,61 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         val nextButton =
             GuiButton(ControllerButtons.NEXT.ordinal, rightButtonX, buttonBottom, ControllerButtons.NEXT.buttonText)
         nextButton.setWidth(buttonWidth)
-        val addLinkButton = GuiButton(ControllerButtons.ADD_LINK.ordinal, 0, 0, ControllerButtons.ADD_LINK.buttonText)
-        addLinkButton.setWidth(fontRenderer.getStringWidth(ControllerButtons.ADD_LINK.buttonText) + 10)
+        val addLinkButton = GuiButton(ControllerButtons.ADD_LINK.ordinal, 50, 0, ControllerButtons.ADD_LINK.buttonText)
+        addLinkButton.setWidth(ControllerButtons.ADD_LINK.width + 10)
 
+        val newFlowButton = GuiButton(ControllerButtons.NEW_FLOW.ordinal, 50, 20, ControllerButtons.NEW_FLOW.buttonText)
+        newFlowButton.setWidth(ControllerButtons.NEW_FLOW.width + 10)
         buttonList.add(prevButton)
         buttonList.add(nextButton)
-        // buttonList.add(addLinkButton)
+        buttonList.add(addLinkButton)
+        buttonList.add(newFlowButton)
     }
 
-    private fun convertFlowsToProgram(flows: ArrayList<ArrayList<IAdvancedFactoryTile>>): ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> {
-        val program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>> = ArrayList()
+    private fun convertFlowsToProgram(flows: ArrayList<ArrayList<IAdvancedFactoryTile>>): ArrayList<Pair<BlockPos, BlockPos>> {
+        val program: ArrayList<Pair<BlockPos, BlockPos>> = ArrayList()
 
-        flows.forEach { flow ->
-            flow.indices.forEach { index ->
-                if (index != 0) {
-                    program.add(Pair(flow[index - 1], flow[index]))
-                }
+        flows.map {
+            it.map {
+                it as TileEntityAdvancedFactory
             }
         }
+            .forEach { flow ->
+                flow.indices.forEach { index ->
+                    if (index != 0) {
+                        var first = flow[index - 1]
+                        var second = flow[index]
+                        program.add(Pair(first.pos, second.pos))
+                    }
+                }
+            }
         return program
     }
 
-    private fun convertProgramToFlows(program: ArrayList<Pair<IAdvancedFactoryTile, IAdvancedFactoryTile>>?): ArrayList<ArrayList<IAdvancedFactoryTile>> {
+    private fun convertProgramToFlows(program: ArrayList<Pair<BlockPos, BlockPos>>?): ArrayList<ArrayList<IAdvancedFactoryTile>> {
         val flow = ArrayList<ArrayList<IAdvancedFactoryTile>>()
 
         var currentFlow = ArrayList<IAdvancedFactoryTile>()
         flow.add(currentFlow)
 
-        program?.forEach {
-            if (currentFlow.isEmpty()) {
-                currentFlow.add(it.first)
+        program?.map {
+            val firstTile = world.getTileEntity(it.first) as? IAdvancedFactoryTile
+            val secondTile = world.getTileEntity(it.second) as? IAdvancedFactoryTile
+            Pair(firstTile, secondTile)
+        }?.forEach {
+            var firstTile = it.first
+            var secondTile = it.second
+            if (firstTile != null && secondTile != null) {
+                if (currentFlow.isEmpty()) {
+                    currentFlow.add(firstTile)
+                }
+                if (currentFlow.last() != firstTile) {
+                    currentFlow = ArrayList()
+                    flow.add(currentFlow)
+                    currentFlow.add(firstTile)
+                }
+                currentFlow.add(secondTile)
             }
-            if (currentFlow.last() != it.first) {
-                currentFlow = ArrayList()
-                flow.add(currentFlow)
-                currentFlow.add(it.first)
-            }
-            currentFlow.add(it.second)
         }
         return flow
     }
@@ -191,10 +211,10 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
             mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2
         }.asSequence().firstOrNull()
         if (clickArea != null) {
-            selectedTile = if (selectedTile == clickArea.key)
+            selectedTile = if (selectedTile == clickArea)
                 null
             else
-                clickArea.key
+                clickArea
             GuiButton(-1, 0, 0, "").playPressSound(mc.soundHandler)
         }
     }
@@ -205,18 +225,35 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
             pageNo--
         } else if (button.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
             pageNo++
-        } /*else if (button?.id == ControllerButtons.ADD_LINK.ordinal) {
-            if (tile != null) {
-                val contents = tile.factoryContents
-                    .filter { it.value != Types.CONTROLLER }
-                    .map { world.getTileEntity(it.key) as? IAdvancedFactoryTile }
-                if (contents.size >= 2) {
-                    if (contents[0] != null && contents[1] != null)
-                        tile.factoryProgram.add(Pair(contents[0]!!, contents[1]!!))
-                }
-            }
-        }*/
+        } else if (button?.id == ControllerButtons.ADD_LINK.ordinal) {
+            addLinkAction()
+        }
         super.actionPerformed(button)
+    }
+
+    private fun addLinkAction() {
+        val selectionToAdd = selectedTile?.value
+        val firstSelection = tempSelection?.value
+        if (selectionToAdd != null) {
+            val flows = convertProgramToFlows(tile?.factoryProgram)
+            val currentFlow = flows[pageNo]
+            AdvancedFactory.logger?.log(Level.INFO, currentFlow)
+            AdvancedFactory.logger?.info("$selectionToAdd $firstSelection")
+            // Tile is selected
+            if (currentFlow.isEmpty()) {
+                if (firstSelection != null) {
+                    currentFlow.add(firstSelection)
+                    currentFlow.add(selectionToAdd)
+                    tempSelection = null
+                } else {
+                    tempSelection = selectedTile
+                }
+            } else {
+                currentFlow.add(selectionToAdd)
+            }
+            selectedTile = null
+            tile?.updateFactoryProgram(convertFlowsToProgram(flows))
+        }
     }
 }
 
