@@ -58,20 +58,16 @@ data class SmelterRecipe(val input: ItemStack, val outputStack: ItemStack) {
 object SmelterRecipes {
     private val smelterRecipes = ArrayList<SmelterRecipe>()
 
+    private fun recipeCreator(inputOre: String, inputAmount: Int, outputOne: String, output1Amount: Int): SmelterRecipe? {
+        val inputStack = OreDictionary.getOres(inputOre, false)
+        val outputOneStack = OreDictionary.getOres(outputOne, false)
+        return SmelterRecipe.createSmelterRecipe(inputStack, inputAmount, outputOneStack, output1Amount)
+    }
+
     fun initSmelterRecipes() {
         arrayOf(
-            SmelterRecipe.createSmelterRecipe(
-                OreDictionary.getOres("dustIron"),
-                1,
-                OreDictionary.getOres("ingotIron"),
-                1
-            ),
-            SmelterRecipe.createSmelterRecipe(
-                OreDictionary.getOres("dustGold"),
-                1,
-                OreDictionary.getOres("ingotGold"),
-                1
-            )
+            recipeCreator("dustIron", 1, "ingotIron", 1),
+            recipeCreator("dustGold", 1, "ingotGold", 1)
         )
             .filter { it != null }
             .forEach { smelterRecipes.add(it!!) }
@@ -87,22 +83,18 @@ object SmelterRecipes {
 object CrusherRecipes {
     private val crusherRecipes = ArrayList<CrusherRecipe>()
 
+    private fun recipeCreator(inputOre: String, outputOne: String, output1Amount: Int, outputTwo: String? = null, outputTwoAmount: Int = 0, outputTwoChance: Int = 0): CrusherRecipe? {
+        val inputStack = OreDictionary.getOres(inputOre, false)
+        val outputOneStack = OreDictionary.getOres(outputOne, false)
+        val outputTwoStack = if (outputTwo != null) OreDictionary.getOres(outputTwo, false) else NonNullList.withSize(1, ItemStack.EMPTY)
+        return CrusherRecipe.createCrusherRecipes(inputStack, outputOneStack, output1Amount, outputTwoStack, outputTwoAmount, outputTwoChance)
+    }
+
+
     fun initCrusherRecipes() {
         arrayOf(
-            CrusherRecipe.createCrusherRecipes(
-                OreDictionary.getOres("oreIron", false),
-                OreDictionary.getOres("dustIron", false),
-                2,
-                OreDictionary.getOres("dustGold", false),
-                1,
-                20
-            ),
-            CrusherRecipe.createCrusherRecipes(
-                OreDictionary.getOres("oreGold", false),
-                OreDictionary.getOres("dustGold", false),
-                2,
-                NonNullList.withSize(1, ItemStack.EMPTY), 0, 0
-            )
+            recipeCreator("oreIron", "dustIron", 2, "dustGold", 1, 20),
+            recipeCreator("oreGold", "dustGold", 2)
         )
             .filter { it != null }
             .forEach { crusherRecipes.add(it!!) }
