@@ -11,6 +11,7 @@ object Blocks {
     val outputHatch = BlockOutputHatch()
     val smelter = BlockSmelter()
     val crusher = BlockCrusher()
+    val energyInputHatch = BlockEnergyInput()
 
     fun initModels() {
         controller.initModel()
@@ -18,20 +19,18 @@ object Blocks {
         outputHatch.initModel()
         smelter.initModel()
         crusher.initModel()
+        energyInputHatch.initModel()
     }
 
     fun getBlockList(): Array<Block> {
-        return arrayOf(controller, inputHatch, outputHatch, smelter, crusher)
+        return arrayOf(controller, inputHatch, outputHatch, smelter, crusher, energyInputHatch)
     }
 
     fun getItemList(): Array<Item> {
-        return arrayOf(
-            ItemBlock(controller).setRegistryName(Blocks.controller.registryName),
-            ItemBlock(inputHatch).setRegistryName(Blocks.inputHatch.registryName),
-            ItemBlock(outputHatch).setRegistryName(Blocks.outputHatch.registryName),
-            ItemBlock(smelter).setRegistryName(Blocks.smelter.registryName),
-            ItemBlock(crusher).setRegistryName(Blocks.crusher.registryName)
-        )
+        return getBlockList()
+            .map {
+                ItemBlock(it).setRegistryName(it.registryName)
+            }.toTypedArray()
     }
 
     fun getBlockFromType(type: Types): BlockAdvancedFactory {
@@ -41,6 +40,8 @@ object Blocks {
             Types.OUTPUT_HATCH -> outputHatch
             Types.SMELTER -> smelter
             Types.CRUSHER -> crusher
+            Types.ENERGY_INPUT -> energyInputHatch
+            Types.ENERGY_STORAGE -> energyInputHatch
         }
     }
 

@@ -24,27 +24,25 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         val width = Minecraft.getMinecraft().fontRenderer.getStringWidth(buttonText)
     }
 
+    private val logger = AdvancedFactory.logger
+
     private var xSize: Int = 176
     private var ySize: Int = 138
 
     private var guiLeft: Int = 0
     private var guiTop: Int = 0
 
-    private var buttons = mutableListOf<GuiButton>()
-    private var blockList = ArrayList<Triple<Types, Int, Int>>()
     private var pageNo = 0
     private val totalPages: Int
         get() = flow.size
 
     private var blockClickArea = HashMap<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>()
     private var selectedTile: Map.Entry<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>? = null
-    private var tempSelection: Map.Entry<Pair<Pair<Int, Int>, Pair<Int, Int>>, IAdvancedFactoryTile?>? = null
 
     private lateinit var flow: ArrayList<ArrayList<IAdvancedFactoryTile>>
 
 
     override fun initGui() {
-        AdvancedFactory.logger?.log(Level.INFO, "initGUI")
         super.initGui()
         guiLeft = (width - xSize) / 2
         guiTop = (height - ySize) / 2
@@ -72,6 +70,21 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
         pageText()
         drawFactoryContents()
         drawSelected()
+        drawEnergy()
+    }
+
+    private fun drawEnergy() {
+        val tileEntityController = tile ?: return
+        val storedRatio = tileEntityController.getStoredEnergy().toDouble() / tileEntityController.getMaxEnergy().toDouble()
+        val res = ResourceLocation(AdvancedFactory.MOD_ID, "textures/gui/gui_energy_blob.png")
+        this.mc.textureManager.bindTexture(res)
+        val textureX = 0
+        val textureY = 0
+        val textureHeight = 4
+        val textureWidth = 184
+        val energyLeft = 50
+        val energyBottom = 50
+        drawTexturedModalRect(energyLeft, energyBottom, textureX, textureY, textureWidth, textureHeight)
     }
 
     private fun drawProgram() {
@@ -223,7 +236,6 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
     }
 
     override fun actionPerformed(button: GuiButton) {
-        AdvancedFactory.logger?.log(Level.INFO, button.id)
         if (button.id == ControllerButtons.PREV.ordinal && pageNo > 0) {
             pageNo--
         } else if (button.id == ControllerButtons.NEXT.ordinal && pageNo < totalPages - 1) {
@@ -238,11 +250,9 @@ class GuiController(val tile: TileEntityController?, val world: World) : GuiBase
 
     private fun addLinkAction() {
         val selectionToAdd = selectedTile?.value
-        //val firstSelection = tempSelection?.value
         if (selectionToAdd != null) {
             val flows = flow
             val currentFlow = flows[pageNo]
-            // Tile is selected
             currentFlow.add(selectionToAdd)
             selectedTile = null
             if (currentFlow.size > 1)

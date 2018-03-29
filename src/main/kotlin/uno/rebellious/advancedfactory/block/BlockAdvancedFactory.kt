@@ -18,7 +18,6 @@ import uno.rebellious.advancedfactory.tile.TileEntityController
 abstract class BlockAdvancedFactory : Block(Material.CIRCUITS) {
     @SideOnly(Side.CLIENT)
     fun initModel() {
-        AdvancedFactory.logger?.log(Level.INFO, "Init Model Registry Name is " + registryName)
         ModelLoader.setCustomModelResourceLocation(
             Item.getItemFromBlock(this),
             0,

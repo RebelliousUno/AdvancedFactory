@@ -15,15 +15,12 @@ import uno.rebellious.advancedfactory.tile.TileEntityInputHatch
 
 class BlockInputHatch : BlockAdvancedFactory(), ITileEntityProvider {
 
-    override fun createNewTileEntity(worldIn: World?, meta: Int): TileEntity? {
-        return TileEntityInputHatch()
-    }
+    override fun createNewTileEntity(worldIn: World?, meta: Int) = TileEntityInputHatch()
 
     init {
         unlocalizedName = "inputhatch"
         setRegistryName("inputhatch")
         setCreativeTab(CreativeTabs.MISC)
-        AdvancedFactory.logger?.log(Level.INFO, "Init Registry Name is " + registryName)
     }
 
     override fun onBlockActivated(

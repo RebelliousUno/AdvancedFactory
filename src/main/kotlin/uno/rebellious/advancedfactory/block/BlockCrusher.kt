@@ -9,14 +9,11 @@ import uno.rebellious.advancedfactory.AdvancedFactory
 import uno.rebellious.advancedfactory.tile.TileEntityCrusher
 
 class BlockCrusher : BlockAdvancedFactory(), ITileEntityProvider {
-    override fun createNewTileEntity(worldIn: World?, meta: Int): TileEntity? {
-        return TileEntityCrusher()
-    }
+    override fun createNewTileEntity(worldIn: World?, meta: Int) = TileEntityCrusher()
 
     init {
         unlocalizedName = "crusher"
         setRegistryName("crusher")
         setCreativeTab(CreativeTabs.MISC)
-        AdvancedFactory.logger?.log(Level.INFO, "Init Registry Name is " + registryName)
     }
 }

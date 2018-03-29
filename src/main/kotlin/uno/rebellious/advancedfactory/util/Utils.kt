@@ -8,7 +8,9 @@ enum class Types(val unlocalizedName: kotlin.String) {
     OUTPUT_HATCH("Output Hatch"),
     SMELTER("Smelter"),
     CRUSHER("Crusher"),
-    CONTROLLER("Crusher")
+    CONTROLLER("Crusher"),
+    ENERGY_INPUT("Energy Input"),
+    ENERGY_STORAGE("Energy Storage")
 }
 
 object Helpers {

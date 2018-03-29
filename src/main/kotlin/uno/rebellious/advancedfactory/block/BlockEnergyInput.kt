@@ -6,14 +6,13 @@ import net.minecraft.tileentity.TileEntity
 import net.minecraft.world.World
 import org.apache.logging.log4j.Level
 import uno.rebellious.advancedfactory.AdvancedFactory
-import uno.rebellious.advancedfactory.tile.TileEntitySmelter
+import uno.rebellious.advancedfactory.tile.TileEntityEnergyInput
 
-class BlockSmelter : BlockAdvancedFactory(), ITileEntityProvider {
-    override fun createNewTileEntity(worldIn: World?, meta: Int) = TileEntitySmelter()
-
+class BlockEnergyInput : BlockAdvancedFactory(), ITileEntityProvider {
     init {
-        unlocalizedName = "smelter"
-        setRegistryName("smelter")
+        unlocalizedName = "energyinput"
+        setRegistryName("energyinput")
         setCreativeTab(CreativeTabs.MISC)
     }
+    override fun createNewTileEntity(worldIn: World?, meta: Int) = TileEntityEnergyInput()
 }

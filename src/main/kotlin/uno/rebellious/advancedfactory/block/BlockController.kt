@@ -20,13 +20,9 @@ class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
         unlocalizedName = "controller"
         setRegistryName("controller")
         setCreativeTab(CreativeTabs.MISC)
-        AdvancedFactory.logger?.log(Level.INFO, "Init Registry Name is " + registryName)
     }
 
-    override fun createNewTileEntity(worldIn: World?, meta: Int): TileEntity? {
-        AdvancedFactory.logger?.log(Level.INFO, "Creating new tile entity")
-        return TileEntityController()
-    }
+    override fun createNewTileEntity(worldIn: World?, meta: Int) = TileEntityController()
 
     override fun onBlockActivated(
         worldIn: World,
@@ -39,7 +35,6 @@ class BlockController : BlockAdvancedFactory(), ITileEntityProvider {
         hitY: Float,
         hitZ: Float
     ): Boolean {
-        AdvancedFactory.logger?.log(Level.INFO, "worldIn.isRemote ${worldIn.isRemote}")
         if (!worldIn.isRemote) {
             this.getFactoryAt(worldIn, pos)?.listBlocks()
         } else {

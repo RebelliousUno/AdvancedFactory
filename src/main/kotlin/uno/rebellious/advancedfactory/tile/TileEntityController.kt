@@ -11,15 +11,15 @@ import uno.rebellious.advancedfactory.networking.FactoryContentsMessage
 import uno.rebellious.advancedfactory.networking.FactoryProgramMessage
 import uno.rebellious.advancedfactory.networking.NetworkHandler
 import uno.rebellious.advancedfactory.util.Types
+import uno.rebellious.advancedfactory.util.Types.*
 import uno.rebellious.advancedfactory.util.isClient
 import uno.rebellious.advancedfactory.util.isServer
 
 class TileEntityController : TileEntityAdvancedFactory(), ITickable {
     override var itemInventory: NonNullList<ItemStack> = NonNullList.withSize(2, ItemStack.EMPTY)
-    override val factoryBlockType = Types.CONTROLLER
+    override val factoryBlockType = CONTROLLER
     override var inputStack: ItemStack = itemInventory[0]
     override var outputStack: ItemStack = itemInventory[1]
-
 
     override fun update() {
         this.checkNeighbours()
@@ -30,13 +30,31 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
     val factoryContents = HashMap<BlockPos, Types>()
     val factoryProgram = ArrayList<Pair<BlockPos, BlockPos>>()
 
-
     fun updateFactoryProgram(program: ArrayList<Pair<BlockPos, BlockPos>>) {
         factoryProgram.clear()
         factoryProgram.addAll(program)
         if (world.isClient) {
             NetworkHandler.INSTANCE.sendToServer(FactoryProgramMessage(this.pos, factoryProgram))
-            //NetworkHandler.INSTANCE.sendToServer(FactoryContentsMessage(factoryContents))
+        }
+    }
+
+    fun getStoredEnergy(): Int {
+        return factoryContents.filter {
+            arrayOf(ENERGY_INPUT, ENERGY_STORAGE).contains(it.value)
+        }.map{
+            world.getTileEntity(it.key) as IAdvancedFactoryEnergyTile
+        }.sumBy {
+            it.storage.energyStored
+        }
+    }
+
+    fun getMaxEnergy(): Int {
+        return factoryContents.filter {
+            arrayOf(ENERGY_INPUT, ENERGY_STORAGE).contains(it.value)
+        }.map{
+            world.getTileEntity(it.key) as IAdvancedFactoryEnergyTile
+        }.sumBy {
+            it.storage.maxEnergyStored
         }
     }
 
@@ -92,10 +110,10 @@ class TileEntityController : TileEntityAdvancedFactory(), ITickable {
 
 
         factoryContents.forEach {
-            if (it.value == Types.INPUT_HATCH) anInputHatch = world.getTileEntity(it.key) as TileEntityInputHatch
-            if (it.value == Types.OUTPUT_HATCH) anOutputHatch = world.getTileEntity(it.key) as TileEntityOutputHatch
-            if (it.value == Types.SMELTER) aSmelter = world.getTileEntity(it.key) as TileEntitySmelter
-            if (it.value == Types.CRUSHER) aCrusher = world.getTileEntity(it.key) as TileEntityCrusher
+            if (it.value == INPUT_HATCH) anInputHatch = world.getTileEntity(it.key) as TileEntityInputHatch
+            if (it.value == OUTPUT_HATCH) anOutputHatch = world.getTileEntity(it.key) as TileEntityOutputHatch
+            if (it.value == SMELTER) aSmelter = world.getTileEntity(it.key) as TileEntitySmelter
+            if (it.value == CRUSHER) aCrusher = world.getTileEntity(it.key) as TileEntityCrusher
         }
         if (anInputHatch != null && anOutputHatch != null && aSmelter != null && aCrusher != null) {
             factoryProgram += Pair(anInputHatch!!.pos, aCrusher!!.pos)
